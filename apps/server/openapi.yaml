@@ -1,0 +1,547 @@
+openapi: 3.1.0
+info:
+  title: Attra Concierge API
+  description: >
+    API do Attra Concierge — consultor premium de veículos da Attra Veículos.
+    Permite buscar veículos reais do estoque, ver detalhes, comparar opções,
+    iniciar contato com consultores e visualizar caminhos de compra.
+  version: 0.1.0
+
+servers:
+  - url: https://concierge.attra.com.br
+    description: Servidor de produção (substituir pelo domínio real após deploy)
+
+paths:
+  /tools/search_inventory:
+    post:
+      operationId: searchInventory
+      summary: Busca veículos no estoque da Attra
+      description: >
+        Busca veículos disponíveis no estoque real da Attra a partir de intenção textual
+        e/ou filtros estruturados (marca, carroceria, combustível, faixa de preço,
+        ano mínimo, blindagem e perfis de uso/posicionamento).
+
+        Use esta Action sempre que o usuário estiver explorando opções, pedindo sugestões
+        ou refinando critérios. Não invente disponibilidade: responda somente com o estoque retornado.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SearchInventoryInput"
+      responses:
+        "200":
+          description: Lista de veículos encontrados com highlights e motivo do match.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ToolResponse_SearchInventory"
+
+  /tools/get_vehicle_details:
+    post:
+      operationId: getVehicleDetails
+      summary: Retorna detalhes de um veículo específico
+      description: >
+        Retorna ficha completa de um veículo do estoque da Attra, incluindo
+        especificações, imagens, resumo consultivo e link oficial.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GetVehicleDetailsInput"
+      responses:
+        "200":
+          description: Detalhes completos do veículo.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ToolResponse_GetVehicleDetails"
+
+  /tools/compare_vehicles:
+    post:
+      operationId: compareVehicles
+      summary: Compara até 3 veículos com lógica consultiva
+      description: >
+        Compara 2 ou 3 veículos do estoque com análise de pontos fortes,
+        trade-offs e recomendação baseada no objetivo do cliente.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CompareVehiclesInput"
+      responses:
+        "200":
+          description: Comparação consultiva com strengths, tradeoffs e recomendação.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ToolResponse_CompareVehicles"
+
+  /tools/start_consultant_handoff:
+    post:
+      operationId: startConsultantHandoff
+      summary: Inicia contato com consultor da Attra
+      description: >
+        Cria um handoff comercial estruturado para continuidade com um consultor humano.
+
+        Use quando houver intenção real de avanço (negociação, troca, financiamento,
+        visita, proposta, decisão por 1 a 3 veículos). Registre contexto útil (orçamento,
+        uso, localização, troca e nível de intenção) sem prometer condições comerciais.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StartConsultantHandoffInput"
+      responses:
+        "200":
+          description: Status do handoff criado.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ToolResponse_StartConsultantHandoff"
+
+  /tools/preview_purchase_path:
+    post:
+      operationId: previewPurchasePath
+      summary: Mostra caminhos de compra possíveis
+      description: >
+        Apresenta os próximos passos comerciais possíveis para um veículo,
+        sem fazer promessas financeiras. Orienta sobre modalidades como
+        pagamento à vista, financiamento ou troca.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PreviewPurchasePathInput"
+      responses:
+        "200":
+          description: Próximos passos e disclaimer.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ToolResponse_PreviewPurchasePath"
+
+components:
+  schemas:
+    SearchInventoryInput:
+      type: object
+      properties:
+        queryText:
+          type: string
+          description: Texto livre com a intenção de busca do usuário (ex. "SUV premium até 500 mil")
+        brand:
+          type: string
+          description: Marca (ex. "Porsche", "BMW", "Mercedes-Benz")
+        bodyType:
+          type: string
+          description: Tipo de carroceria (ex. "SUV", "Sedã", "Coupé")
+        fuelType:
+          type: string
+          description: Combustível (ex. "Gasolina", "Híbrido")
+        priceMin:
+          type: number
+          minimum: 0
+          description: Preço mínimo (em BRL)
+        priceMax:
+          type: number
+          minimum: 0
+          description: Preço máximo (em BRL)
+        yearMin:
+          type: integer
+          minimum: 1900
+          description: Ano/modelo mínimo
+        armored:
+          type: boolean
+          description: Se deve ser blindado
+        usageProfile:
+          type: string
+          description: Perfil de uso (texto curto/constante interna)
+        positioningProfile:
+          type: string
+          description: Perfil de posicionamento (texto curto/constante interna)
+
+    GetVehicleDetailsInput:
+      type: object
+      required: [vehicleId]
+      properties:
+        vehicleId:
+          type: string
+          description: ID do veículo (ex. "ac-950539")
+
+    CompareVehiclesInput:
+      type: object
+      required: [vehicleIds]
+      properties:
+        vehicleIds:
+          type: array
+          items:
+            type: string
+          minItems: 2
+          maxItems: 3
+          description: IDs dos veículos para comparar (2 a 3)
+        comparisonGoal:
+          type: string
+          description: Objetivo da comparação (ex. "qual é melhor para uso diário")
+
+    StartConsultantHandoffInput:
+      type: object
+      description: >
+        Payload estruturado para iniciar continuidade comercial com consultor humano.
+        Informe 1 a 3 veículos (vehicleId ou vehicleIds) e um interestSummary objetivo.
+      oneOf:
+        - required: [vehicleId, interestSummary, contactChannel]
+        - required: [vehicleIds, interestSummary, contactChannel]
+      properties:
+        vehicleId:
+          type: string
+          description: ID de um veículo de interesse (alternativa a vehicleIds)
+        vehicleIds:
+          type: array
+          items:
+            type: string
+          minItems: 1
+          maxItems: 3
+          description: Lista curta (1 a 3) de IDs dos veículos de interesse
+        interestSummary:
+          type: string
+          description: Resumo objetivo do que o cliente busca e por quê (uso + orçamento + preferências)
+        preferredStore:
+          type: string
+          description: Unidade preferida (se o cliente mencionar)
+        contactChannel:
+          type: string
+          enum: [whatsapp, crm, email]
+          description: Canal preferido para continuidade (se informado pelo cliente)
+        userName:
+          type: string
+          description: Nome do cliente (se informado)
+        context:
+          type: object
+          description: Contexto estruturado para o consultor (opcional, mas recomendado)
+          properties:
+            budget:
+              type: object
+              properties:
+                min:
+                  type: number
+                  minimum: 0
+                max:
+                  type: number
+                  minimum: 0
+                notes:
+                  type: string
+            usage:
+              type: object
+              properties:
+                primaryUse:
+                  type: string
+                  enum: [daily, executive, family, weekend, performance, offroad, mixed, unknown]
+                needsArmoring:
+                  type: boolean
+                passengers:
+                  type: integer
+                  minimum: 0
+                notes:
+                  type: string
+            location:
+              type: object
+              properties:
+                city:
+                  type: string
+                region:
+                  type: string
+            tradeIn:
+              type: object
+              properties:
+                hasTradeIn:
+                  type: boolean
+                vehicleDescription:
+                  type: string
+                notes:
+                  type: string
+            intent:
+              type: object
+              properties:
+                stage:
+                  type: string
+                  enum: [exploring, shortlist, ready]
+                timeline:
+                  type: string
+                  enum: [immediate, 7d, 30d, 60d, 90d, unknown]
+                notes:
+                  type: string
+            priorities:
+              type: array
+              items:
+                type: string
+              maxItems: 8
+            objections:
+              type: array
+              items:
+                type: string
+              maxItems: 6
+
+    PreviewPurchasePathInput:
+      type: object
+      required: [vehicleId, purchaseMode]
+      properties:
+        vehicleId:
+          type: string
+          description: ID do veículo
+        purchaseMode:
+          type: string
+          enum: [cash, trade_in, financing]
+          description: Modalidade de compra pretendida
+        budgetContext:
+          type: string
+          description: Contexto de orçamento do cliente (opcional)
+
+    VehicleRecord:
+      type: object
+      properties:
+        id:
+          type: string
+        externalStockId:
+          type: string
+        brand:
+          type: string
+        model:
+          type: string
+        version:
+          type: string
+        title:
+          type: string
+        yearModel:
+          type: integer
+        price:
+          type: number
+        mileageKm:
+          type: number
+        fuelType:
+          type: string
+        transmission:
+          type: string
+        bodyType:
+          type: string
+        armored:
+          type: boolean
+        color:
+          type: string
+        storeUnit:
+          type: string
+        available:
+          type: boolean
+        vehicleUrl:
+          type: string
+          format: uri
+        mainImageUrl:
+          type: string
+          format: uri
+        imageUrls:
+          type: array
+          items:
+            type: string
+            format: uri
+        usageProfile:
+          type: string
+        positioningProfile:
+          type: string
+
+    VehicleSearchHighlight:
+      type: object
+      properties:
+        label:
+          type: string
+        value:
+          type: string
+
+    VehicleSearchResult:
+      type: object
+      properties:
+        vehicle:
+          $ref: "#/components/schemas/VehicleRecord"
+        highlights:
+          type: array
+          items:
+            $ref: "#/components/schemas/VehicleSearchHighlight"
+        matchReason:
+          type: string
+
+    ToolResponse_SearchInventory:
+      type: object
+      properties:
+        tool:
+          type: string
+        result:
+          type: object
+          properties:
+            results:
+              type: array
+              items:
+                $ref: "#/components/schemas/VehicleSearchResult"
+            total:
+              type: integer
+            appliedFilters:
+              type: object
+            emptyReason:
+              type: string
+
+    ToolResponse_GetVehicleDetails:
+      type: object
+      properties:
+        tool:
+          type: string
+        result:
+          type: object
+          properties:
+            vehicle:
+              $ref: "#/components/schemas/VehicleRecord"
+            highlights:
+              type: array
+              items:
+                type: string
+            consultantSummary:
+              type: string
+            officialLink:
+              type: string
+              format: uri
+
+    ToolResponse_CompareVehicles:
+      type: object
+      properties:
+        tool:
+          type: string
+        result:
+          type: object
+          properties:
+            vehicles:
+              type: array
+              items:
+                $ref: "#/components/schemas/VehicleRecord"
+            strengths:
+              type: array
+              items:
+                type: object
+                properties:
+                  title:
+                    type: string
+                  summary:
+                    type: string
+            tradeoffs:
+              type: array
+              items:
+                type: object
+                properties:
+                  title:
+                    type: string
+                  summary:
+                    type: string
+            recommendation:
+              type: string
+
+    ToolResponse_StartConsultantHandoff:
+      type: object
+      properties:
+        tool:
+          type: string
+        result:
+          type: object
+          properties:
+            status:
+              type: string
+              enum: [accepted, failed]
+            destination:
+              type: string
+            message:
+              type: string
+            payload:
+              type: object
+              properties:
+                origin:
+                  type: string
+                  enum: [chatgpt_app]
+                createdAt:
+                  type: string
+                requestedVehicleIds:
+                  type: array
+                  items:
+                    type: string
+                  minItems: 1
+                  maxItems: 3
+                vehicles:
+                  type: array
+                  minItems: 1
+                  maxItems: 3
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      title:
+                        type: string
+                      brand:
+                        type: string
+                      model:
+                        type: string
+                      version:
+                        type: string
+                      yearModel:
+                        type: integer
+                      price:
+                        type: number
+                      mileageKm:
+                        type: number
+                      fuelType:
+                        type: string
+                      transmission:
+                        type: string
+                      bodyType:
+                        type: string
+                      armored:
+                        type: boolean
+                      color:
+                        type: string
+                      storeUnit:
+                        type: string
+                      available:
+                        type: boolean
+                      vehicleUrl:
+                        type: string
+                        format: uri
+                      mainImageUrl:
+                        type: string
+                        format: uri
+                contactChannel:
+                  type: string
+                  enum: [whatsapp, crm, email]
+                preferredStore:
+                  type: string
+                  nullable: true
+                userName:
+                  type: string
+                  nullable: true
+                interestSummary:
+                  type: string
+                context:
+                  type: object
+                  nullable: true
+
+    ToolResponse_PreviewPurchasePath:
+      type: object
+      properties:
+        tool:
+          type: string
+        result:
+          type: object
+          properties:
+            nextSteps:
+              type: array
+              items:
+                type: string
+            disclaimer:
+              type: string
+

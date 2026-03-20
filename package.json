@@ -1,0 +1,17 @@
+{
+  "name": "attra-concierge",
+  "private": true,
+  "version": "0.1.0",
+  "packageManager": "pnpm@10.6.0",
+  "scripts": {
+    "dev:server": "pnpm --filter @attra/server dev",
+    "dev:web": "pnpm --filter @attra/web dev",
+    "build": "pnpm -r build",
+    "check": "pnpm -r check"
+  },
+  "devDependencies": {
+    "@types/node": "^25.5.0",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  }
+}
