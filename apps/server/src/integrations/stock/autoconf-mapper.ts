@@ -53,7 +53,7 @@ function buildTitle(v: AutoConfVeiculo): string {
 
 function buildVehicleUrl(v: AutoConfVeiculo): string {
   const year = v.anomodelo || v.anofabricacao;
-  return `https://attraveiculos.com.br/veiculos/${v.marca_slug}-${v.modelopai_slug}-${year}-${v.id}`;
+  return `https://attraveiculos.com.br/veiculo/${v.marca_slug}-${v.modelopai_slug}-${year}-${v.id}`;
 }
 
 function mapBodyType(carroceria: string): string {
