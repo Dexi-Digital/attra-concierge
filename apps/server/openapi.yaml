@@ -8,8 +8,8 @@ info:
   version: 0.1.0
 
 servers:
-  - url: https://concierge.attra.com.br
-    description: Servidor de produção (substituir pelo domínio real após deploy)
+  - url: https://concierge.attraveiculos.com.br
+    description: Servidor de produção
 
 paths:
   /tools/search_inventory:

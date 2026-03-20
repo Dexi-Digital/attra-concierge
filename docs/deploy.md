@@ -19,7 +19,7 @@ O serviço pode rodar na mesma VPS que já hospeda o N8N.
 ### 1. Clonar e buildar
 
 ```bash
-git clone <REPO_URL> /opt/attra-concierge
+git clone https://github.com/Dexi-Digital/attra-concierge.git /opt/attra-concierge
 cd /opt/attra-concierge
 
 corepack enable
@@ -34,7 +34,7 @@ pnpm --filter @attra/server build
 cat > /opt/attra-concierge/.env << 'EOF'
 APP_PORT=3001
 APP_HOST=0.0.0.0
-APP_BASE_URL=https://attra-api.SEU-DOMINIO.com
+APP_BASE_URL=https://concierge.attraveiculos.com.br
 AUTOCONF_BASE_URL=https://api.autoconf.com.br
 AUTOCONF_AUTH_TOKEN=<TOKEN_AUTH_AQUI>
 AUTOCONF_REVENDA_TOKEN=<TOKEN_REVENDA_AQUI>
@@ -53,7 +53,7 @@ node --env-file=/opt/attra-concierge/.env \
 Deve exibir:
 ```
 [AutoConf] Using real AutoConf API for vehicle data
-Attra Concierge disponível em https://attra-api.SEU-DOMINIO.com na porta 3001.
+Attra Concierge disponível em https://concierge.attraveiculos.com.br na porta 3001.
 ```
 
 ### 4. Criar serviço systemd
@@ -104,7 +104,7 @@ docker run -d \
   --name attra-concierge \
   --restart always \
   -p 3001:3000 \
-  -e APP_BASE_URL=https://attra-api.SEU-DOMINIO.com \
+  -e APP_BASE_URL=https://concierge.attraveiculos.com.br \
   -e AUTOCONF_BASE_URL=https://api.autoconf.com.br \
   -e AUTOCONF_AUTH_TOKEN=<TOKEN_AUTH_AQUI> \
   -e AUTOCONF_REVENDA_TOKEN=<TOKEN_REVENDA_AQUI> \
@@ -127,10 +127,10 @@ Adicionar um server block para o subdomínio:
 ```nginx
 server {
     listen 443 ssl http2;
-    server_name attra-api.SEU-DOMINIO.com;
+    server_name concierge.attraveiculos.com.br;
 
-    ssl_certificate     /etc/letsencrypt/live/attra-api.SEU-DOMINIO.com/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/attra-api.SEU-DOMINIO.com/privkey.pem;
+    ssl_certificate     /etc/letsencrypt/live/concierge.attraveiculos.com.br/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/concierge.attraveiculos.com.br/privkey.pem;
 
     location / {
         proxy_pass http://127.0.0.1:3001;
@@ -144,7 +144,7 @@ server {
 
 server {
     listen 80;
-    server_name attra-api.SEU-DOMINIO.com;
+    server_name concierge.attraveiculos.com.br;
     return 301 https://$host$request_uri;
 }
 ```
@@ -152,7 +152,7 @@ server {
 ### Gerar certificado SSL
 
 ```bash
-sudo certbot --nginx -d attra-api.SEU-DOMINIO.com
+sudo certbot --nginx -d concierge.attraveiculos.com.br
 ```
 
 ---
@@ -161,13 +161,13 @@ sudo certbot --nginx -d attra-api.SEU-DOMINIO.com
 
 ```bash
 # Health check
-curl https://attra-api.SEU-DOMINIO.com/health
+curl https://concierge.attraveiculos.com.br/health
 
 # Listar tools disponíveis
-curl https://attra-api.SEU-DOMINIO.com/tools
+curl https://concierge.attraveiculos.com.br/tools
 
 # Testar busca real
-curl -s -X POST https://attra-api.SEU-DOMINIO.com/tools/search_inventory \
+curl -s -X POST https://concierge.attraveiculos.com.br/tools/search_inventory \
   -H 'Content-Type: application/json' \
   -d '{"queryText":"porsche"}' | head -c 500
 ```
