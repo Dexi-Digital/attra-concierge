@@ -52,7 +52,8 @@ function buildTitle(v: AutoConfVeiculo): string {
 }
 
 function buildVehicleUrl(v: AutoConfVeiculo): string {
-  return `https://www.autoconf.com.br/${v.revenda_slug}/${v.marca_slug}/${v.modelopai_slug}/${v.id}`;
+  const year = v.anomodelo || v.anofabricacao;
+  return `https://attraveiculos.com.br/veiculos/${v.marca_slug}-${v.modelopai_slug}-${year}-${v.id}`;
 }
 
 function mapBodyType(carroceria: string): string {
