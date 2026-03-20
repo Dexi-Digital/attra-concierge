@@ -15,6 +15,7 @@ paths:
   /tools/search_inventory:
     post:
       operationId: searchInventory
+      x-openai-isConsequential: false
       summary: Busca veículos no estoque da Attra
       description: >
         Busca veículos disponíveis no estoque real da Attra a partir de intenção textual
@@ -40,6 +41,7 @@ paths:
   /tools/get_vehicle_details:
     post:
       operationId: getVehicleDetails
+      x-openai-isConsequential: false
       summary: Retorna detalhes de um veículo específico
       description: >
         Retorna ficha completa de um veículo do estoque da Attra, incluindo
@@ -61,6 +63,7 @@ paths:
   /tools/compare_vehicles:
     post:
       operationId: compareVehicles
+      x-openai-isConsequential: false
       summary: Compara até 3 veículos com lógica consultiva
       description: >
         Compara 2 ou 3 veículos do estoque com análise de pontos fortes,
@@ -106,6 +109,7 @@ paths:
   /tools/preview_purchase_path:
     post:
       operationId: previewPurchasePath
+      x-openai-isConsequential: false
       summary: Mostra caminhos de compra possíveis
       description: >
         Apresenta os próximos passos comerciais possíveis para um veículo,
