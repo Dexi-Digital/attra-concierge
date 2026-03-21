@@ -8,7 +8,7 @@ info:
   version: 0.1.0
 
 servers:
-  - url: https://concierge.attraveiculos.com.br
+  - url: https://hortatory-superpatriotic-melba.ngrok-free.dev
     description: Servidor de produção
 
 paths:
@@ -18,12 +18,10 @@ paths:
       x-openai-isConsequential: false
       summary: Busca veículos no estoque da Attra
       description: >
-        Busca veículos disponíveis no estoque real da Attra a partir de intenção textual
-        e/ou filtros estruturados (marca, carroceria, combustível, faixa de preço,
-        ano mínimo, blindagem e perfis de uso/posicionamento).
-
-        Use esta Action sempre que o usuário estiver explorando opções, pedindo sugestões
-        ou refinando critérios. Não invente disponibilidade: responda somente com o estoque retornado.
+        Busca veículos do estoque real da Attra por intenção textual e/ou filtros
+        (marca, carroceria, combustível, preço, ano, blindagem, perfis).
+        Use sempre que o usuário explorar opções ou refinar critérios.
+        Nunca invente disponibilidade: use só o estoque retornado.
       requestBody:
         required: true
         content:
@@ -87,11 +85,10 @@ paths:
       operationId: startConsultantHandoff
       summary: Inicia contato com consultor da Attra
       description: >
-        Cria um handoff comercial estruturado para continuidade com um consultor humano.
-
+        Cria handoff comercial para continuidade com consultor humano.
         Use quando houver intenção real de avanço (negociação, troca, financiamento,
-        visita, proposta, decisão por 1 a 3 veículos). Registre contexto útil (orçamento,
-        uso, localização, troca e nível de intenção) sem prometer condições comerciais.
+        visita, proposta, decisão). Registre contexto (orçamento, uso, localização,
+        troca, intenção) sem prometer condições comerciais.
       requestBody:
         required: true
         content:
