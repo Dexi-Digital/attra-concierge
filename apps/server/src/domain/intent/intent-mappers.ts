@@ -26,6 +26,15 @@ export function inferArmored(queryText: string): boolean | undefined {
   return queryText.includes("blindad") ? true : undefined;
 }
 
+export function inferPriceMax(queryText: string): number | undefined {
+  // "até 500 mil" / "ate 500mil" / "500k"
+  const milMatch = queryText.match(/(\d[\d.,]*)\s*mil/);
+  if (milMatch) return Math.round(parseFloat(milMatch[1].replace(",", ".")) * 1_000);
+  const kMatch = queryText.match(/(\d[\d.,]*)\s*k\b/);
+  if (kMatch) return Math.round(parseFloat(kMatch[1].replace(",", ".")) * 1_000);
+  return undefined;
+}
+
 function normalize(value: string): string {
   return value
     .normalize("NFD")

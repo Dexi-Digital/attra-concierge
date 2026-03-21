@@ -5,6 +5,7 @@ import {
   inferBodyType,
   inferBrand,
   inferPositioningProfile,
+  inferPriceMax,
   inferUsageProfile
 } from "./intent-mappers.js";
 
@@ -21,7 +22,8 @@ export function parseSearchIntent(input: SearchInventoryInput): ParsedIntent {
     positioningProfile:
       input.positioningProfile ??
       capture(inferPositioningProfile(normalizedQuery), inferredFromQuery, "positioningProfile"),
-    armored: input.armored ?? capture(inferArmored(normalizedQuery), inferredFromQuery, "armored")
+    armored: input.armored ?? capture(inferArmored(normalizedQuery), inferredFromQuery, "armored"),
+    priceMax: input.priceMax ?? capture(inferPriceMax(normalizedQuery), inferredFromQuery, "priceMax")
   };
 
   return { filters, inferredFromQuery };

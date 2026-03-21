@@ -68,6 +68,16 @@ function compactFilters(filters: VehicleSearchFilters): Record<string, string | 
   );
 }
 
+// Palavras que não identificam veículos e devem ser ignoradas no match de texto
+const TEXT_STOPWORDS = new Set([
+  "ate", "para", "de", "um", "uma", "no", "na", "por", "com", "sem", "e", "a", "o",
+  "da", "do", "dos", "das", "em", "que", "se", "me", "te", "nos", "os", "as",
+  "quero", "queria", "busco", "procuro", "mostra", "manda", "tenho", "interesse",
+  "mil", "k", "reais", "r",
+  "premium", "top", "bom", "boa", "otimo", "otima", "novo", "nova", "melhor",
+  "mais", "menos", "muito", "pouco", "nao", "sim", "agora", "disponivel"
+]);
+
 function matchesText(vehicle: VehicleRecord, queryText?: string): boolean {
   if (!queryText) return true;
 
@@ -75,10 +85,16 @@ function matchesText(vehicle: VehicleRecord, queryText?: string): boolean {
     [vehicle.brand, vehicle.model, vehicle.version, vehicle.title, vehicle.bodyType, vehicle.usageProfile].join(" ")
   );
 
-  return normalize(queryText)
+  // Filtra tokens sem significado (stopwords e números puros)
+  const meaningfulTokens = normalize(queryText)
     .split(" ")
     .filter(Boolean)
-    .every((token) => searchableText.includes(token));
+    .filter((token) => !TEXT_STOPWORDS.has(token) && !/^\d+$/.test(token));
+
+  // Se só restar stopwords, não bloqueia nenhum veículo
+  if (meaningfulTokens.length === 0) return true;
+
+  return meaningfulTokens.every((token) => searchableText.includes(token));
 }
 
 function matchesValue(source?: string, expected?: string): boolean {
