@@ -1,6 +1,36 @@
 import type { StartConsultantHandoffInput, StartConsultantHandoffResponse } from "@attra/shared";
+import { readEnv } from "../../config/env.js";
 import { vehicleRepository } from "../../domain/vehicles/vehicle.repository.js";
+import { logger } from "../../telemetry/logger.js";
 import { notFound } from "../../utils/app-error.js";
+
+async function dispatchWebhook(
+  url: string,
+  payload: StartConsultantHandoffResponse["payload"]
+): Promise<void> {
+  try {
+    const res = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+      signal: AbortSignal.timeout(8_000)
+    });
+    if (!res.ok) {
+      logger.warn("handoff: webhook retornou status inesperado", {
+        status: res.status,
+        url
+      });
+    } else {
+      logger.info("handoff: webhook disparado com sucesso", { status: res.status, url });
+    }
+  } catch (err) {
+    logger.error("handoff: falha ao disparar webhook", {
+      url,
+      error: err instanceof Error ? err.message : String(err)
+    });
+    // Não propaga o erro — o handoff foi aceito independente do webhook
+  }
+}
 
 export async function startConsultantHandoff(
   input: StartConsultantHandoffInput
@@ -23,7 +53,7 @@ export async function startConsultantHandoff(
 
   const primaryVehicle = orderedVehicles[0];
 
-  return {
+  const response: StartConsultantHandoffResponse = {
     status: "accepted",
     destination: input.contactChannel,
     message: `Interesse em ${primaryVehicle.title} preparado para continuidade comercial.`,
@@ -57,4 +87,9 @@ export async function startConsultantHandoff(
       context: input.context ?? null
     }
   };
+
+  const { handoffWebhookUrl } = readEnv();
+  void dispatchWebhook(handoffWebhookUrl, response.payload);
+
+  return response;
 }

@@ -9,6 +9,7 @@ export interface AppEnv {
   autoconfBaseUrl: string;
   autoconfAuthToken: string;
   autoconfRevendaToken: string;
+  handoffWebhookUrl: string;
 }
 
 export function readEnv(source: NodeJS.ProcessEnv = process.env): AppEnv {
@@ -20,6 +21,9 @@ export function readEnv(source: NodeJS.ProcessEnv = process.env): AppEnv {
     webBaseUrl: source.WEB_BASE_URL ?? "http://localhost:5173",
     autoconfBaseUrl: source.AUTOCONF_BASE_URL ?? "https://api.autoconf.com.br",
     autoconfAuthToken: source.AUTOCONF_AUTH_TOKEN ?? "",
-    autoconfRevendaToken: source.AUTOCONF_REVENDA_TOKEN ?? ""
+    autoconfRevendaToken: source.AUTOCONF_REVENDA_TOKEN ?? "",
+    handoffWebhookUrl:
+      source.HANDOFF_WEBHOOK_URL ??
+      "https://webhook.dexidigital.com.br/webhook/integracao-openai"
   };
 }
