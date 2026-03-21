@@ -7,7 +7,8 @@
     "dev:server": "pnpm --filter @attra/server dev",
     "dev:web": "pnpm --filter @attra/web dev",
     "build": "pnpm -r build",
-    "check": "pnpm -r check"
+    "check": "pnpm -r check",
+    "start": "pnpm --filter @attra/server start"
   },
   "devDependencies": {
     "@types/node": "^25.5.0",

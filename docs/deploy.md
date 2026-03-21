@@ -26,18 +26,21 @@ corepack enable
 pnpm install
 pnpm --filter @attra/shared build
 pnpm --filter @attra/server build
+pnpm --filter @attra/web build
 ```
 
 ### 2. Criar arquivo de ambiente
 
 ```bash
 cat > /opt/attra-concierge/.env << 'EOF'
+NODE_ENV=production
 APP_PORT=3001
 APP_HOST=0.0.0.0
 APP_BASE_URL=https://concierge.attraveiculos.com.br
 AUTOCONF_BASE_URL=https://api.autoconf.com.br
 AUTOCONF_AUTH_TOKEN=<TOKEN_AUTH_AQUI>
 AUTOCONF_REVENDA_TOKEN=<TOKEN_REVENDA_AQUI>
+HANDOFF_WEBHOOK_URL=https://webhook.dexidigital.com.br/webhook/integracao-openai
 EOF
 
 chmod 600 /opt/attra-concierge/.env
@@ -104,10 +107,12 @@ docker run -d \
   --name attra-concierge \
   --restart always \
   -p 3001:3000 \
+  -e NODE_ENV=production \
   -e APP_BASE_URL=https://concierge.attraveiculos.com.br \
   -e AUTOCONF_BASE_URL=https://api.autoconf.com.br \
   -e AUTOCONF_AUTH_TOKEN=<TOKEN_AUTH_AQUI> \
   -e AUTOCONF_REVENDA_TOKEN=<TOKEN_REVENDA_AQUI> \
+  -e HANDOFF_WEBHOOK_URL=https://webhook.dexidigital.com.br/webhook/integracao-openai \
   attra-concierge
 ```
 
@@ -180,12 +185,14 @@ Todos devem retornar JSON válido com status 200.
 
 | Variável | Obrigatória | Descrição |
 |---|---|---|
+| `NODE_ENV` | Não | `production` em produção (padrão: development) |
 | `APP_PORT` | Não | Porta do servidor (padrão: 3000) |
 | `APP_HOST` | Não | Host de bind (padrão: 0.0.0.0) |
 | `APP_BASE_URL` | Sim | URL pública com HTTPS |
 | `AUTOCONF_BASE_URL` | Não | URL da API AutoConf (padrão: https://api.autoconf.com.br) |
 | `AUTOCONF_AUTH_TOKEN` | Sim | Token de autenticação da API AutoConf |
 | `AUTOCONF_REVENDA_TOKEN` | Sim | Token da revenda na API AutoConf |
+| `HANDOFF_WEBHOOK_URL` | Não | Webhook N8N para handoff de leads (já tem padrão configurado) |
 
 ---
 
@@ -197,6 +204,7 @@ git pull
 pnpm install
 pnpm --filter @attra/shared build
 pnpm --filter @attra/server build
+pnpm --filter @attra/web build
 sudo systemctl restart attra-concierge
 ```
 
