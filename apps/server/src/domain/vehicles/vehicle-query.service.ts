@@ -69,13 +69,17 @@ function compactFilters(filters: VehicleSearchFilters): Record<string, string | 
 }
 
 // Palavras que não identificam veículos e devem ser ignoradas no match de texto
+// Inclui termos que já são tratados como filtros estruturados (ex: "blindado" → armored: true)
 const TEXT_STOPWORDS = new Set([
   "ate", "para", "de", "um", "uma", "no", "na", "por", "com", "sem", "e", "a", "o",
   "da", "do", "dos", "das", "em", "que", "se", "me", "te", "nos", "os", "as",
   "quero", "queria", "busco", "procuro", "mostra", "manda", "tenho", "interesse",
   "mil", "k", "reais", "r",
   "premium", "top", "bom", "boa", "otimo", "otima", "novo", "nova", "melhor",
-  "mais", "menos", "muito", "pouco", "nao", "sim", "agora", "disponivel"
+  "mais", "menos", "muito", "pouco", "nao", "sim", "agora", "disponivel",
+  // Termos tratados como filtros estruturados — não devem bloquear pelo texto
+  "blindado", "blindada", "blindagem", "blindad",
+  "importado", "importada"
 ]);
 
 function matchesText(vehicle: VehicleRecord, queryText?: string): boolean {
