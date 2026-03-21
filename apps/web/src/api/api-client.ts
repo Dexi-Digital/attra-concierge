@@ -11,7 +11,9 @@ import type {
   PreviewPurchasePathResponse
 } from "@attra/shared";
 
-const BASE = import.meta.env.VITE_API_BASE ?? "http://localhost:3000";
+// Em dev, o proxy do Vite encaminha /tools → localhost:3000.
+// Em prod (build servido pelo server), a URL é relativa ao mesmo host.
+const BASE = import.meta.env.VITE_API_BASE ?? "";
 
 async function callTool<TInput, TResponse>(
   toolName: string,

@@ -1,3 +1,8 @@
 export function LoadingState() {
-  return <section className="panel muted">Carregando interface inicial…</section>;
+  return (
+    <div className="loading-state">
+      <div className="spinner" />
+      <span>Consultando estoque ao vivo…</span>
+    </div>
+  );
 }

@@ -1,4 +1,8 @@
 import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
-export function VehicleCard({ vehicle }) {
-    return (_jsxs("article", { className: "panel", children: [_jsx("p", { className: "eyebrow", children: vehicle.brand }), _jsx("h2", { children: vehicle.title }), _jsxs("p", { children: [vehicle.yearModel, " \u2022 ", vehicle.mileageKm.toLocaleString("pt-BR"), " km"] }), _jsxs("strong", { children: ["R$ ", vehicle.price.toLocaleString("pt-BR")] })] }));
+export function VehicleCard({ vehicle, selected, onSelect, onOpen }) {
+    const priceFormatted = `R$ ${vehicle.price.toLocaleString("pt-BR")}`;
+    const metaLine = `${vehicle.yearModel} • ${vehicle.mileageKm.toLocaleString("pt-BR")} km`;
+    return (_jsxs("article", { className: `card${selected ? " card--selected" : ""}`, children: [_jsxs("div", { className: "card__media", children: [vehicle.mainImageUrl
+                        ? _jsx("img", { className: "card__img", src: vehicle.mainImageUrl, alt: vehicle.title, loading: "lazy" })
+                        : _jsx("div", { className: "card__img-placeholder", children: "\uD83D\uDE97" }), _jsx("div", { className: "card__badges", children: vehicle.armored && _jsx("span", { className: "badge", children: "Blindado" }) })] }), _jsxs("div", { className: "card__body", children: [_jsxs("p", { className: "eyebrow", children: [vehicle.brand, " \u2022 ", vehicle.bodyType] }), _jsx("h3", { className: "card__title", children: vehicle.title }), _jsx("p", { className: "card__meta", children: metaLine }), _jsx("p", { className: "card__price", children: priceFormatted })] }), _jsxs("div", { className: "card__actions", children: [onSelect && (_jsx("button", { className: `btn btn--sm${selected ? " btn--outline" : ""}`, onClick: (e) => { e.stopPropagation(); onSelect(vehicle.id); }, children: selected ? "✓ Selecionado" : "Comparar" })), onOpen && (_jsx("button", { className: "btn btn--sm btn--primary", style: { flex: 1 }, onClick: (e) => { e.stopPropagation(); onOpen(vehicle.id); }, children: "Ver detalhes" }))] })] }));
 }

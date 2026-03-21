@@ -10,16 +10,21 @@ export function VehicleDetailPanel({ data, onBack }: VehicleDetailPanelProps) {
 
   return (
     <section className="panel section-stack">
-      <button className="btn btn--ghost" onClick={onBack}>← Voltar</button>
+      <div>
+        <button className="btn btn--ghost" onClick={onBack}>← Voltar aos resultados</button>
+      </div>
 
       <div className="detail-header">
         {vehicle.mainImageUrl && (
           <img className="detail-img" src={vehicle.mainImageUrl} alt={vehicle.title} />
         )}
-        <div>
+        <div className="detail-info">
           <p className="eyebrow">{vehicle.brand} • {vehicle.bodyType}</p>
-          <h2>{vehicle.title}</h2>
-          <p className="card__price">R$ {vehicle.price.toLocaleString("pt-BR")}</p>
+          <h2 style={{ fontSize: "1.6rem", fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.2 }}>
+            {vehicle.title}
+          </h2>
+          <p className="detail-price">R$ {vehicle.price.toLocaleString("pt-BR")}</p>
+          {vehicle.armored && <span className="badge" style={{ marginTop: "0.25rem" }}>Blindado</span>}
         </div>
       </div>
 
@@ -28,7 +33,6 @@ export function VehicleDetailPanel({ data, onBack }: VehicleDetailPanelProps) {
         <span>{vehicle.mileageKm.toLocaleString("pt-BR")} km</span>
         <span>{vehicle.transmission}</span>
         <span>{vehicle.fuelType}</span>
-        {vehicle.armored && <span className="badge">Blindado</span>}
         <span>{vehicle.storeUnit}</span>
       </div>
 
@@ -41,12 +45,15 @@ export function VehicleDetailPanel({ data, onBack }: VehicleDetailPanelProps) {
         </div>
       )}
 
-      <p className="detail-summary">{consultantSummary}</p>
+      {consultantSummary && (
+        <p className="detail-summary">{consultantSummary}</p>
+      )}
 
       <div className="detail-actions">
-        <a className="btn btn--primary" href={officialLink} target="_blank" rel="noopener noreferrer">
-          Ver no site Attra
+        <a className="btn btn--primary btn--lg" href={officialLink} target="_blank" rel="noopener noreferrer">
+          Ver no site Attra →
         </a>
+        <button className="btn" onClick={onBack}>Voltar</button>
       </div>
     </section>
   );

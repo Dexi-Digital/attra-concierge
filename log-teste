@@ -1,0 +1,537 @@
+quero uma porsche
+[debug] Calling HTTP endpoint
+{
+  "domain": "hortatory-superpatriotic-melba.ngrok-free.dev",
+  "method": "post",
+  "path": "/tools/search_inventory",
+  "operation": "searchInventory",
+  "operation_hash": "0a98e3a3a0a938f98429d7fd8ddfc5ebaaa4d828",
+  "is_consequential": true,
+  "params": {
+    "queryText": "Porsche",
+    "brand": "Porsche"
+  }
+}
+[debug] Response received
+{
+  "function_name": "searchInventory",
+  "domain": "hortatory-superpatriotic-melba.ngrok-free.dev",
+  "detail": {
+    "retryable": true,
+    "message": "The requested action requires approval"
+  },
+  "action_id": "g-69f611681669f76092a7a1ebd715a69376149354"
+}
+[debug] Calling HTTP endpoint
+{
+  "domain": "hortatory-superpatriotic-melba.ngrok-free.dev",
+  "method": "post",
+  "path": "/tools/search_inventory",
+  "operation": "searchInventory",
+  "operation_hash": "0a98e3a3a0a938f98429d7fd8ddfc5ebaaa4d828",
+  "is_consequential": true,
+  "params": {
+    "queryText": "Porsche",
+    "brand": "Porsche"
+  }
+}
+[debug] Response received
+{
+  "response_data": {
+    "tool": "search_inventory",
+    "result": {
+      "results": [
+        {
+          "vehicle": {
+            "id": "ac-888544",
+            "externalStockId": "888544",
+            "brand": "Porsche",
+            "model": "911",
+            "version": "911 Carrera T 3.0",
+            "title": "Porsche 911 2024",
+            "yearModel": 2024,
+            "price": 1059000,
+            "mileageKm": 11500,
+            "fuelType": "Gasolina",
+            "transmission": "Automático",
+            "bodyType": "Coupé",
+            "armored": false,
+            "color": "Preto",
+            "storeUnit": "Attra Veículos",
+            "available": true,
+            "vehicleUrl": "https://www.autoconf.com.br/attra-veiculos/porsche/911/888544",
+            "mainImageUrl": "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/888544/59c699ea-1434-4f00-8421-02e628cc4036.jpg",
+            "imageUrls": [
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/888544/59c699ea-1434-4f00-8421-02e628cc4036.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/888544/e006035b-f840-4593-9b0d-4aa403573e36.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/888544/69277863-beab-4860-9489-8a735fa48410.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/888544/f3f62972-0be3-4d0a-901b-665ad82cb48e.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/888544/8709c939-ae3b-454b-b777-2fe65a6ba396.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/888544/d53c0c31-baef-481e-a9d6-c5f4b8035e81.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/888544/dcf16354-0910-4c1a-a9f7-b865fcd6504b.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/888544/f78025bb-796c-4dab-88cb-33dca38ea475.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/888544/eb56f85f-2dc3-4472-8f14-fe6c880ebd4a.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/888544/846dec4c-d5b3-4067-be8b-351d64454f72.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/888544/af77ccf8-5fd7-4906-86bc-adb67f32c79c.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/888544/7d0335b0-c300-4d35-a339-ad1d51bf4456.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/888544/5b0bc626-c5a5-4274-8b6e-d5ab2a15581c.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/888544/0d2cd8d1-ff24-4a17-a171-9ed11b724b26.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/888544/befaf584-a429-49ff-b9b9-a716ca5fb746.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/888544/604e26cc-7a1a-4cb0-a377-36889d0236cf.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/888544/860f16ab-a8e5-4d94-8f3f-83fbee6d76af.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/888544/1f9022f3-a613-47a7-abab-c5d244e9e671.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/888544/a8ac49e7-ccaa-4bc1-ad23-3e3aa73ac2b5.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/888544/995a0e86-9eb6-4036-a2ca-3fa0c0f4d81e.jpg"
+            ],
+            "positioningProfile": "esportivo_premium"
+          },
+          "matchReason": "Porsche 911 2024 combina com a intenção \"Porsche\".",
+          "highlights": [
+            {
+              "label": "Preço",
+              "value": "R$ 1.059.000"
+            },
+            {
+              "label": "Quilometragem",
+              "value": "11.500 km"
+            },
+            {
+              "label": "Uso",
+              "value": "perfil não classificado"
+            },
+            {
+              "label": "Unidade",
+              "value": "Attra Veículos"
+            }
+          ]
+        },
+        {
+          "vehicle": {
+            "id": "ac-905269",
+            "externalStockId": "905269",
+            "brand": "Porsche",
+            "model": "911",
+            "version": "911 Turbo S Coupe 3.6/3.8 24V (991/992)",
+            "title": "Porsche 911 2024",
+            "yearModel": 2024,
+            "price": 1790000,
+            "mileageKm": 3920,
+            "fuelType": "Gasolina",
+            "transmission": "Automático",
+            "bodyType": "Coupé",
+            "armored": false,
+            "color": "Vermelho",
+            "storeUnit": "Attra Veículos",
+            "available": true,
+            "vehicleUrl": "https://www.autoconf.com.br/attra-veiculos/porsche/911/905269",
+            "mainImageUrl": "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/905269/05926768-edf4-4736-8e62-8769c76ef9c1.jpg",
+            "imageUrls": [
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/905269/05926768-edf4-4736-8e62-8769c76ef9c1.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/905269/c33ef76e-b591-4424-9968-676b3c7c3c6f.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/905269/3cc30bc1-3567-4014-9e7f-3b603b4d94ae.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/905269/7b151f2c-9959-4bde-8f23-fbf1602b6abe.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/905269/0f460d15-f865-4f33-b254-ed33173ddc3b.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/905269/a8242a46-8dec-406b-93f9-27bfb1395080.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/905269/00181a6c-ecbb-4c6c-948a-60ac45125d48.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/905269/3853f8dd-fbee-4de2-a784-6e3e64d54d2f.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/905269/9c94ef36-655d-4a19-a784-10998f8e3969.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/905269/3fd60fa5-795d-4076-9218-980c6137bc1d.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/905269/962a55dd-62f5-4200-a7a2-8610ce001934.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/905269/90de0855-c3a5-4787-858a-cbb9ecfe16a9.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/905269/d1be9f10-7ad8-4906-8dab-feaa596ce10f.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/905269/09840bff-51e2-4eb2-8795-fc5d916ddba9.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/905269/91c7e224-a36d-41cc-ad4f-9bb47b7abff2.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/905269/94df414d-752a-4e94-a865-d97b476dc562.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/905269/a71a9a13-6d64-4f93-84c7-06f62dbdbdd0.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/905269/8a6eebc0-ace6-4cca-8148-b8f6405deb66.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/905269/f390e93b-e729-4e54-8716-9804f84b2aa9.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/905269/02cb6c75-bd8f-458e-a615-8fc1908dca4f.jpg"
+            ],
+            "positioningProfile": "esportivo_premium"
+          },
+          "matchReason": "Porsche 911 2024 combina com a intenção \"Porsche\".",
+          "highlights": [
+            {
+              "label": "Preço",
+              "value": "R$ 1.790.000"
+            },
+            {
+              "label": "Quilometragem",
+              "value": "3.920 km"
+            },
+            {
+              "label": "Uso",
+              "value": "perfil não classificado"
+            },
+            {
+              "label": "Unidade",
+              "value": "Attra Veículos"
+            }
+          ]
+        },
+        {
+          "vehicle": {
+            "id": "ac-874967",
+            "externalStockId": "874967",
+            "brand": "Porsche",
+            "model": "Macan",
+            "version": "Macan 2.0 Turbo",
+            "title": "Porsche Macan 2023",
+            "yearModel": 2023,
+            "price": 459000,
+            "mileageKm": 20700,
+            "fuelType": "Gasolina",
+            "transmission": "Automático",
+            "bodyType": "SUV",
+            "armored": false,
+            "color": "Cinza",
+            "storeUnit": "Attra Veículos",
+            "available": true,
+            "vehicleUrl": "https://www.autoconf.com.br/attra-veiculos/porsche/macan/874967",
+            "mainImageUrl": "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/874967/3c4eadfc-fc3d-4f54-82ef-1302d8f8f8ee.jpg",
+            "imageUrls": [
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/874967/3c4eadfc-fc3d-4f54-82ef-1302d8f8f8ee.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/874967/3184bc8a-02f4-442d-a9ce-44d9cdb088a5.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/874967/65092f7d-a810-49af-adaf-5a56ba691d3d.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/874967/e3093162-31a7-4841-9dc1-1171d0533748.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/874967/0cfb5cd9-242a-4744-8cd6-ed0c02d1bbeb.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/874967/a897a1b0-9063-4b77-b2a7-55711339da94.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/874967/850be36a-0cea-486c-af07-e66db4f07da5.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/874967/ea1af11f-8d45-4478-801f-4be8c2c3084a.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/874967/43259d8d-6815-47f3-93df-cde73ce527f3.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/874967/c47e07a6-7b8d-44d5-a01b-7d589c6df5d1.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/874967/b327752a-e615-4c35-bdd9-bf979c5dd3ce.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/874967/979a8fc1-2a18-4f8f-9d2c-1c0207d4ca74.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/874967/176a3baa-ea9c-49bb-bb5b-8024428fbdf8.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/874967/9a95150f-333b-4036-8f30-e925b7c42f1c.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/874967/068ab171-f83b-4ba6-a0ec-52e0287177f5.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/874967/12b343e2-02bd-4bd6-8446-7f2f9a4516df.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/874967/e0507be4-fa3e-4cef-bed6-df71442ffa25.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/874967/fe705537-11dc-4f92-8077-d90e7fd8d9b9.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/874967/3b7cb817-d787-46c4-bb7c-f89c6609f7f2.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/874967/8959bb6f-71b7-446e-8683-235252aa6502.jpg"
+            ],
+            "usageProfile": "uso_diario",
+            "positioningProfile": "premium"
+          },
+          "matchReason": "Porsche Macan 2023 combina com a intenção \"Porsche\".",
+          "highlights": [
+            {
+              "label": "Preço",
+              "value": "R$ 459.000"
+            },
+            {
+              "label": "Quilometragem",
+              "value": "20.700 km"
+            },
+            {
+              "label": "Uso",
+              "value": "uso_diario"
+            },
+            {
+              "label": "Unidade",
+              "value": "Attra Veículos"
+            }
+          ]
+        },
+        {
+          "vehicle": {
+            "id": "ac-950539",
+            "externalStockId": "950539",
+            "brand": "Porsche",
+            "model": "911",
+            "version": "911 Carrera T 3.0",
+            "title": "Porsche 911 2019",
+            "yearModel": 2019,
+            "price": 619000,
+            "mileageKm": 37900,
+            "fuelType": "Gasolina",
+            "transmission": "Automático",
+            "bodyType": "Coupé",
+            "armored": false,
+            "color": "Preto",
+            "storeUnit": "Attra Veículos",
+            "available": true,
+            "vehicleUrl": "https://www.autoconf.com.br/attra-veiculos/porsche/911/950539",
+            "mainImageUrl": "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/950539/fa7b22b7-03ad-41a1-982e-9bd34d33a733.jpg",
+            "imageUrls": [
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/950539/fa7b22b7-03ad-41a1-982e-9bd34d33a733.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/950539/0e340df5-db71-48b7-9a40-250804fed4e0.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/950539/ca0726cc-2d13-436a-9209-cc6e337c6c85.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/950539/7e00e919-e00a-4996-9ead-b8b6aa684365.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/950539/117fe58e-01bf-4041-9dc7-105a90535e9e.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/950539/346ba0ff-4f3f-4d41-99e6-875c682d3338.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/950539/38a79231-0ac0-4871-973c-2a9ccd987f07.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/950539/6dbd5566-5ffa-4389-be98-ed452151d07e.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/950539/e9fa8ac3-0349-47bf-930b-066ab36b5ea1.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/950539/df084d8d-0ec7-4a67-9f36-658e920e0e38.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/950539/9e690ad6-a5d7-4508-8f46-a23b4d723c4b.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/950539/e02ecfef-94c2-4147-a5bc-8c9ba13e4e9b.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/950539/31ba845f-8515-4a86-bf35-013f4eb5e214.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/950539/517d8819-8e0b-4ac2-956a-7931c4bcb5a9.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/950539/1c20a68e-4031-478e-b327-a38ff999a889.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/950539/6c08ee16-341b-43cc-b7bf-691e7ac3b06d.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/950539/899cc04e-6362-4012-a10f-f1fadb5b2cbd.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/950539/74517f5c-601b-42d9-bd67-d1269606f21e.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/950539/4aaf0733-2735-4418-93a7-681edb8a9607.jpg"
+            ],
+            "positioningProfile": "esportivo_premium"
+          },
+          "matchReason": "Porsche 911 2019 combina com a intenção \"Porsche\".",
+          "highlights": [
+            {
+              "label": "Preço",
+              "value": "R$ 619.000"
+            },
+            {
+              "label": "Quilometragem",
+              "value": "37.900 km"
+            },
+            {
+              "label": "Uso",
+              "value": "perfil não classificado"
+            },
+            {
+              "label": "Unidade",
+              "value": "Attra Veículos"
+            }
+          ]
+        },
+        {
+          "vehicle": {
+            "id": "ac-949004",
+            "externalStockId": "949004",
+            "brand": "Porsche",
+            "model": "Cayenne",
+            "version": "Cayenne Coupe Platinum Ed. 3.0 (Híbrido)",
+            "title": "Porsche Cayenne 2022",
+            "yearModel": 2022,
+            "price": 669000,
+            "mileageKm": 32470,
+            "fuelType": "Gasolina e Elétrico",
+            "transmission": "Automático",
+            "bodyType": "Coupé",
+            "armored": true,
+            "color": "Branco",
+            "storeUnit": "Attra Veículos",
+            "available": true,
+            "vehicleUrl": "https://www.autoconf.com.br/attra-veiculos/porsche/cayenne/949004",
+            "mainImageUrl": "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/949004/0cf22e67-9be3-4163-a0ae-ca4f30fffd07.jpg",
+            "imageUrls": [
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/949004/0cf22e67-9be3-4163-a0ae-ca4f30fffd07.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/949004/e79e9d15-85b8-4d70-97ce-5b65447054b3.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/949004/49496d2f-759d-4204-a1cc-5222eb019685.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/949004/b89b9db1-33f5-432b-87d2-3613dd2ee036.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/949004/3308de05-1937-459d-88b5-9d422e9f99b5.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/949004/2292b1b5-9670-4119-afe9-12cc7e320ca9.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/949004/aecc1f04-a590-4bfa-bcb1-ccf3953a9959.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/949004/cea729d9-2b89-4c52-85bc-4836c8b67f06.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/949004/72c248c3-a6b7-4d5c-b99f-dada7173068e.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/949004/61618038-e73e-4070-932c-903fb0a7c077.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/949004/162733ad-f555-4c25-b76d-edc874a8ece3.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/949004/a9fa4520-c88f-4f30-bea2-3ca2a56bd0a1.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/949004/8083f83d-16ab-4ccf-acc1-5f084022b35f.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/949004/9d9f3d62-1298-4d8b-a61d-97eef80c9c25.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/949004/415f856f-40ea-4605-b03a-a6380f62ebf1.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/949004/6195f07f-43ee-420d-82c9-30d1414dd914.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/949004/d995d834-ddb9-49c5-a691-a127cf3bcbb5.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/949004/ca003aef-7ad4-436a-a50d-5420d3954c3d.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/949004/8a6792dc-a88c-49e5-a2ab-3cd4b594b21f.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/949004/63f79186-7371-4935-9ae6-bcecdc57b6e2.jpg"
+            ],
+            "positioningProfile": "esportivo_premium"
+          },
+          "matchReason": "Porsche Cayenne 2022 combina com a intenção \"Porsche\".",
+          "highlights": [
+            {
+              "label": "Preço",
+              "value": "R$ 669.000"
+            },
+            {
+              "label": "Quilometragem",
+              "value": "32.470 km"
+            },
+            {
+              "label": "Uso",
+              "value": "perfil não classificado"
+            },
+            {
+              "label": "Unidade",
+              "value": "Attra Veículos"
+            }
+          ]
+        },
+        {
+          "vehicle": {
+            "id": "ac-779673",
+            "externalStockId": "779673",
+            "brand": "Porsche",
+            "model": "Panamera",
+            "version": "Panamera 4S 2.9 560cv (Híbrido)",
+            "title": "Porsche Panamera 2025",
+            "yearModel": 2025,
+            "price": 1190000,
+            "mileageKm": 3500,
+            "fuelType": "Gasolina e Elétrico",
+            "transmission": "Automático",
+            "bodyType": "Sedã",
+            "armored": false,
+            "color": "Cinza",
+            "storeUnit": "Attra Veículos",
+            "available": true,
+            "vehicleUrl": "https://www.autoconf.com.br/attra-veiculos/porsche/panamera/779673",
+            "mainImageUrl": "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/779673/be663132-c322-43a6-8393-10b2cf30a350.jpg",
+            "imageUrls": [
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/779673/be663132-c322-43a6-8393-10b2cf30a350.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/779673/8309fa05-4703-468d-9122-ec746dffb938.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/779673/55b70213-ff04-4626-a02f-763724e2771f.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/779673/ff755a0e-d566-4287-ba32-34af12205075.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/779673/e6cf9e4e-51b4-4998-a0cc-4c33c20ccea5.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/779673/2423db55-0503-4b02-ab00-553c194bdf63.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/779673/aeee21fe-85f5-45f5-a38d-659a4b07ed37.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/779673/3a7cda46-b773-4fd3-857d-1cd0fbf71798.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/779673/3d7a1b3a-a9e7-41a3-a211-2cabc7b2e0da.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/779673/d7a78dbe-4ecb-45dd-b2fc-8a743e4b902c.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/779673/b41b97e7-6aa7-4e15-b2cd-cf7b6327d9b9.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/779673/4ad000d5-54f2-4cd5-82db-666aa5b7cfbb.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/779673/25ea0ea5-162e-4393-9403-ec0bd4f504df.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/779673/08457af1-1073-4eda-9c93-504ecc7dbdfc.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/779673/6b8c2861-db50-471e-9b56-cdc8ad1db46d.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/779673/cfa702be-7880-4946-bba0-5d1297065f7c.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/779673/d40d9ba1-d85b-4e43-bb75-1fe959b13214.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/779673/94c618df-7d0c-4ab3-bfd3-c87ad58cdd42.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/779673/c6085901-0204-4cb7-a391-a92c2170e79b.jpg",
+              "https://autoconf-production.s3.amazonaws.com/veiculos/fotos/779673/62f24255-0314-4ea1-8d18-07c6c67f5951.jpg"
+            ],
+            "positioningProfile": "esportivo_premium"
+          },
+          "matchReason": "Porsche Panamera 2025 combina com a intenção \"Porsche\".",
+          "highlights": [
+            {
+              "label": "Preço",
+              "value": "R$ 1.190.000"
+            },
+            {
+              "label": "Quilometragem",
+              "value": "3.500 km"
+            },
+            {
+              "label": "Uso",
+              "value": "perfil não classificado"
+            },
+            {
+              "label": "Unidade",
+              "value": "Attra Veículos"
+            }
+          ]
+        }
+      ],
+      "total": 6,
+      "appliedFilters": {
+        "queryText": "Porsche",
+        "brand": "Porsche"
+      }
+    }
+  },
+  "status_code": 200,
+  "action_id": "g-69f611681669f76092a7a1ebd715a69376149354"
+}
+Falou com hortatory-superpatriotic-melba.ngrok-free.dev
+Chamada de ferramenta: hortatory_superpatriotic_melba_ngrok_free_dev__jit_plugin.searchInventory
+O seguinte conteúdo foi compartilhado:
+Política de privacidade
+{
+queryText: 
+'Porsche'
+, 
+brand: 
+'Porsche'
+}
+
+Encontrei boas opções de Porsche no estoque real — vou direto ao ponto com as mais interessantes:
+
+🔥 Esportivos (experiência pura)
+
+911 Carrera T 2024 — R$ 1.059.000
+11.500 km, configuração bem equilibrada (performance + uso real)
+
+911 Turbo S 2024 — R$ 1.790.000
+3.900 km, topo da cadeia — brutal em desempenho
+
+911 Carrera T 2019 — R$ 619.000
+Entrada mais “inteligente” no mundo 911
+
+🧠 Uso mais versátil (dia a dia)
+
+Macan 2023 — R$ 459.000
+SUV, mais confortável e prático pra rotina
+
+Cayenne Coupé Híbrido Blindado 2022 — R$ 669.000
+Mistura luxo + segurança + presença
+
+Panamera 4S Híbrido 2025 — R$ 1.190.000
+Sedã executivo com pegada esportiva
+
+Se quiser, eu afino isso rápido pra você — porque “quero uma Porsche” pode ir de um carro de fim de semana até um daily driver.
+
+Me diz:
+👉 vai usar mais no dia a dia ou é carro de prazer?
+👉 tem faixa de investimento em mente?
+
+911 Carrera T 2024
+[debug] Calling HTTP endpoint
+[debug] Response received
+[debug] Calling HTTP endpoint
+[debug] Response received
+Falou com hortatory-superpatriotic-melba.ngrok-free.dev
+
+Aqui vai o essencial desse carro — e já te dou a leitura de valor:
+
+🏁 Porsche 911 Carrera T 2024
+
+Preço: R$ 1.059.000
+
+KM: 11.500
+
+Cor: Preto
+
+Configuração: Carrera T (pegada mais purista e leve)
+
+Câmbio: Automático (PDK)
+
+Link oficial:
+https://www.autoconf.com.br/attra-veiculos/porsche/911/888544
+
+💡 O que esse carro é, de verdade
+
+O Carrera T não é “só um 911” — ele é a versão pra quem gosta de dirigir mesmo.
+
+Mais leve e mais direto que um Carrera comum
+
+Ajustes focados em dinâmica (menos conforto, mais conexão)
+
+Ponto doce da linha: não exagerado como Turbo S, mas muito mais envolvente
+
+👉 Em resumo: é o 911 certo pra quem quer sentir o carro, não só acelerar.
+
+⚖️ Vale a pena?
+
+Sim — principalmente por três motivos:
+
+Já passou a maior desvalorização inicial
+
+Baixa km e geração atual
+
+Difícil de achar nessa configuração no Brasil
+
+Se você estiver considerando ele de verdade, o próximo passo faz diferença:
+👉 quer que eu te mostre como seria avançar (à vista, troca ou financiamento)?
+👉 ou prefere comparar com o Turbo S pra ver se faz sentido subir o nível?
+
+tem foto?
+
+Sim — aqui está uma prévia 👇
+
+Esse é o carro real do estoque.
+
+Se quiser ver mais ângulos (interior, traseira, detalhes) ou analisar acabamento e opcionais, me fala que te mostro o que realmente importa antes de decidir.

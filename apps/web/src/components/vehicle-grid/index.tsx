@@ -14,7 +14,9 @@ export function VehicleGrid({ results, total, selectedIds, onSelect, onOpen, onC
   return (
     <section className="section-stack">
       <div className="section-header">
-        <h2>Resultados ({total})</h2>
+        <h2 className="results-label">
+          Resultados <span className="results-count">({total})</span>
+        </h2>
         {selectedIds.length >= 2 && (
           <button className="btn btn--primary" onClick={onCompare}>
             Comparar {selectedIds.length} veículos

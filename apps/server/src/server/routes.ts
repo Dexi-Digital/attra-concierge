@@ -1,4 +1,6 @@
 import type { IncomingMessage, ServerResponse } from "node:http";
+import fs from "node:fs";
+import path from "node:path";
 import type { AnalyticsEventType } from "@attra/shared";
 import { appConfig } from "../config/app-config.js";
 import { registerTools } from "../mcp/register-tools.js";
@@ -7,6 +9,47 @@ import { logger } from "../telemetry/logger.js";
 import { badRequest } from "../utils/app-error.js";
 import { sendError, sendJson } from "./error-handler.js";
 import type { ToolName } from "../mcp/tool-metadata.js";
+
+// Pasta do build da web app (apps/web/dist), relativa ao CWD do server (apps/server)
+const WEB_DIST = path.resolve(process.cwd(), "../web/dist");
+
+const MIME: Record<string, string> = {
+  ".html":  "text/html; charset=utf-8",
+  ".js":    "application/javascript; charset=utf-8",
+  ".css":   "text/css; charset=utf-8",
+  ".png":   "image/png",
+  ".jpg":   "image/jpeg",
+  ".jpeg":  "image/jpeg",
+  ".svg":   "image/svg+xml",
+  ".ico":   "image/x-icon",
+  ".woff2": "font/woff2",
+  ".woff":  "font/woff",
+  ".json":  "application/json",
+};
+
+function serveStaticFile(response: ServerResponse, urlPathname: string): boolean {
+  if (!fs.existsSync(WEB_DIST)) return false;
+
+  let filePath = path.join(WEB_DIST, urlPathname);
+
+  // Para rotas SPA sem extensão → servir index.html
+  if (!path.extname(filePath) || !fs.existsSync(filePath)) {
+    filePath = path.join(WEB_DIST, "index.html");
+  }
+
+  if (!fs.existsSync(filePath)) return false;
+
+  const ext = path.extname(filePath).toLowerCase();
+  const contentType = MIME[ext] ?? "application/octet-stream";
+  const content = fs.readFileSync(filePath);
+
+  response.writeHead(200, {
+    "Content-Type": contentType,
+    "Cache-Control": ext === ".html" ? "no-cache" : "public, max-age=31536000, immutable",
+  });
+  response.end(content);
+  return true;
+}
 
 const tools = registerTools();
 
@@ -103,6 +146,9 @@ export async function routeRequest(request: IncomingMessage, response: ServerRes
     }
     return;
   }
+
+  // Fallback: serve web app (SPA) para rotas GET não reconhecidas
+  if (method === "GET" && serveStaticFile(response, url.pathname)) return;
 
   sendError(response, 404, "Rota não encontrada.");
 }

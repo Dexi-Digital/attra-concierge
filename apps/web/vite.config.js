@@ -3,6 +3,11 @@ import { defineConfig } from "vite";
 export default defineConfig({
     plugins: [react()],
     server: {
-        port: 5173
+        port: 5173,
+        proxy: {
+            "/tools": { target: "http://localhost:3000", changeOrigin: true },
+            "/health": { target: "http://localhost:3000", changeOrigin: true },
+            "/analytics": { target: "http://localhost:3000", changeOrigin: true }
+        }
     }
 });

@@ -1,4 +1,4 @@
-import { jsx as _jsx } from "react/jsx-runtime";
+import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 export function LoadingState() {
-    return _jsx("section", { className: "panel muted", children: "Carregando interface inicial\u2026" });
+    return (_jsxs("div", { className: "loading-state", children: [_jsx("div", { className: "spinner" }), _jsx("span", { children: "Consultando estoque ao vivo\u2026" })] }));
 }
