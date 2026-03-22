@@ -35,6 +35,18 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ToolResponse_SearchInventory"
+        "400":
+          description: Erro de validação nos parâmetros enviados.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Erro interno do servidor.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 
   /tools/get_vehicle_details:
     post:
@@ -45,6 +57,24 @@ paths:
         Retorna ficha completa de um veículo do estoque da Attra, incluindo
         especificações, imagens, resumo consultivo e link oficial.
       requestBody:
+        "400":
+          description: Erro de validação (vehicleId ausente ou inválido).
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Veículo não encontrado no estoque.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Erro interno do servidor.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
         required: true
         content:
           application/json:
@@ -61,11 +91,41 @@ paths:
   /tools/compare_vehicles:
     post:
       operationId: compareVehicles
+        "400":
+          description: Erro de validação (vehicleIds ausentes, quantidade inválida, etc).
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Um ou mais veículos não encontrados no estoque.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Erro interno do servidor.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
       x-openai-isConsequential: false
       summary: Compara até 3 veículos com lógica consultiva
       description: >
         Compara 2 ou 3 veículos do estoque com análise de pontos fortes,
         trade-offs e recomendação baseada no objetivo do cliente.
+        "400":
+          description: Erro de validação (campos obrigatórios ausentes, formato inválido).
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Erro interno do servidor ao criar handoff.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
       requestBody:
         required: true
         content:
@@ -77,6 +137,24 @@ paths:
           description: Comparação consultiva com strengths, tradeoffs e recomendação.
           content:
             application/json:
+        "400":
+          description: Erro de validação (vehicleId ou purchaseMode ausentes/inválidos).
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Veículo não encontrado no estoque.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Erro interno do servidor.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
               schema:
                 $ref: "#/components/schemas/ToolResponse_CompareVehicles"
 
@@ -128,6 +206,28 @@ paths:
 
 components:
   schemas:
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+              description: Código de erro (ex. VALIDATION_ERROR, NOT_FOUND)
+            message:
+              type: string
+              description: Mensagem de erro legível
+            details:
+              type: object
+              description: Detalhes adicionais do erro (opcional)
+      required: [error]
+      example:
+        error:
+          code: "VALIDATION_ERROR"
+          message: "Campo 'vehicleId' é obrigatório"
+          details: {}
+
     SearchInventoryInput:
       type: object
       properties:
@@ -172,6 +272,8 @@ components:
         vehicleId:
           type: string
           description: ID do veículo (ex. "ac-950539")
+      example:
+        vehicleId: "ac-950539"
 
     CompareVehiclesInput:
       type: object
@@ -185,6 +287,9 @@ components:
           maxItems: 3
           description: IDs dos veículos para comparar (2 a 3)
         comparisonGoal:
+      example:
+        vehicleIds: ["ac-123", "ac-456", "ac-789"]
+        comparisonGoal: "qual é melhor para uso diário com família"
           type: string
           description: Objetivo da comparação (ex. "qual é melhor para uso diário")
 
@@ -285,6 +390,29 @@ components:
               items:
                 type: string
               maxItems: 6
+      example:
+        vehicleIds: ["ac-123"]
+        interestSummary: "Buscando SUV premium para uso familiar, orçamento até 500 mil, interessado em financiamento"
+        contactChannel: "whatsapp"
+        userName: "João Silva"
+        preferredStore: "São Paulo"
+        context:
+          budget:
+            min: 300000
+            max: 500000
+            notes: "Entrada de 30%, parcelas de até 2000"
+          usage:
+            primaryUse: "family"
+            needsArmoring: true
+            passengers: 5
+          location:
+            city: "São Paulo"
+            region: "SP"
+          intent:
+            stage: "shortlist"
+            timeline: "30d"
+          priorities: ["segurança", "conforto", "espaço interno"]
+          objections: ["combustível elevado"]
 
     PreviewPurchasePathInput:
       type: object
@@ -297,6 +425,10 @@ components:
           type: string
           enum: [cash, trade_in, financing]
           description: Modalidade de compra pretendida
+      example:
+        vehicleId: "ac-123"
+        purchaseMode: "financing"
+        budgetContext: "Financiamento de 60 meses, entrada de 30%"
         budgetContext:
           type: string
           description: Contexto de orçamento do cliente (opcional)
