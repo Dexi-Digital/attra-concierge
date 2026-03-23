@@ -119,6 +119,65 @@ test("verifyAccessToken retorna null para token inválido", () => {
   assert.equal(verifyAccessToken("not-a-jwt"), null);
 });
 
+test("generateAuthCode e exchangeAuthCode funcionam sem PKCE (compatibilidade ChatGPT)", () => {
+  const code = generateAuthCode({
+    clientId: "attra-chatgpt-app",
+    redirectUri: "https://chatgpt.com/connector/oauth/ohId_bwhSyVf",
+    scopes: TEST_SCOPES,
+    // sem codeChallenge
+    codeChallengeMethod: "S256",
+    sub: "user@chatgpt.com",
+    email: "user@chatgpt.com",
+    name: "Usuário ChatGPT"
+  });
+
+  assert.ok(typeof code === "string" && code.length > 0);
+
+  const result = exchangeAuthCode({
+    code,
+    redirectUri: "https://chatgpt.com/connector/oauth/ohId_bwhSyVf",
+    // sem codeVerifier
+    clientId: "attra-chatgpt-app"
+  });
+
+  assert.ok(result !== null);
+  assert.equal(result!.sub, "user@chatgpt.com");
+  assert.equal(result!.email, "user@chatgpt.com");
+  assert.deepEqual(result!.scopes, TEST_SCOPES);
+});
+
+test("exchangeAuthCode retorna null para client_id incorreto", () => {
+  const verifier = "verifier-clientid-test";
+  const challenge = createHash("sha256").update(verifier).digest("base64url");
+  const code = generateAuthCode({
+    clientId: "client-correct",
+    redirectUri: "https://example.com/cb",
+    scopes: TEST_SCOPES,
+    codeChallenge: challenge,
+    codeChallengeMethod: "S256",
+    sub: "u@test.com",
+    email: "u@test.com"
+  });
+  const result = exchangeAuthCode({ code, redirectUri: "https://example.com/cb", codeVerifier: verifier, clientId: "client-wrong" });
+  assert.equal(result, null);
+});
+
+test("exchangeAuthCode retorna null para redirect_uri incorreto", () => {
+  const verifier = "verifier-redirect-test";
+  const challenge = createHash("sha256").update(verifier).digest("base64url");
+  const code = generateAuthCode({
+    clientId: "client1",
+    redirectUri: "https://example.com/correct",
+    scopes: TEST_SCOPES,
+    codeChallenge: challenge,
+    codeChallengeMethod: "S256",
+    sub: "u@test.com",
+    email: "u@test.com"
+  });
+  const result = exchangeAuthCode({ code, redirectUri: "https://example.com/wrong", codeVerifier: verifier, clientId: "client1" });
+  assert.equal(result, null);
+});
+
 test("generateIdToken gera token OIDC com aud e nonce", () => {
   const token = generateIdToken({
     sub: "user@example.com",

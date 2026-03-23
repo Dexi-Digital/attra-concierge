@@ -4,6 +4,8 @@
  * MCP security requirement: never allow raw HTML/script in model-visible text.
  */
 
+const SCRIPT_BLOCK_PATTERN = /<script\b[^]*?<\/script>/gi;
+const STYLE_BLOCK_PATTERN = /<style\b[^]*?<\/style>/gi;
 const HTML_TAG_PATTERN = /<[^>]*>/g;
 const SCRIPT_EVENT_PATTERN = /on\w+\s*=/gi;
 const JAVASCRIPT_PROTOCOL = /javascript\s*:/gi;
@@ -12,6 +14,8 @@ const EXCESSIVE_WHITESPACE = /\s{3,}/g;
 
 export function sanitizeText(value: string): string {
   return value
+    .replace(SCRIPT_BLOCK_PATTERN, "")   // remove <script>...</script> with content
+    .replace(STYLE_BLOCK_PATTERN, "")    // remove <style>...</style> with content
     .replace(HTML_TAG_PATTERN, "")
     .replace(SCRIPT_EVENT_PATTERN, "")
     .replace(JAVASCRIPT_PROTOCOL, "")

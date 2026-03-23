@@ -2,11 +2,13 @@ const brandDictionary = ["Porsche", "BMW", "Mercedes-Benz"];
 const bodyTypeDictionary = ["SUV", "Sedan", "Coupé"];
 
 export function inferBrand(queryText: string): string | undefined {
-  return brandDictionary.find((brand) => queryText.includes(normalize(brand)));
+  const normalizedQuery = normalize(queryText);
+  return brandDictionary.find((brand) => normalizedQuery.includes(normalize(brand)));
 }
 
 export function inferBodyType(queryText: string): string | undefined {
-  return bodyTypeDictionary.find((bodyType) => queryText.includes(normalize(bodyType)));
+  const normalizedQuery = normalize(queryText);
+  return bodyTypeDictionary.find((bodyType) => normalizedQuery.includes(normalize(bodyType)));
 }
 
 export function inferUsageProfile(queryText: string): string | undefined {
@@ -23,7 +25,7 @@ export function inferPositioningProfile(queryText: string): string | undefined {
 }
 
 export function inferArmored(queryText: string): boolean | undefined {
-  return queryText.includes("blindad") ? true : undefined;
+  return normalize(queryText).includes("blind") ? true : undefined;
 }
 
 export function inferPriceMax(queryText: string): number | undefined {

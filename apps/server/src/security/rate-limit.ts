@@ -36,7 +36,7 @@ setInterval(() => {
       buckets.delete(key);
     }
   }
-}, 120_000);
+}, 120_000).unref();
 
 export interface RateLimitResult {
   allowed: boolean;

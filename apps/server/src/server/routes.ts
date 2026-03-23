@@ -296,8 +296,8 @@ function handleOAuthAuthorizeGet(url: URL, response: ServerResponse): void {
   const codeChallengeMethod = p.get("code_challenge_method") ?? "S256";
   const nonce = p.get("nonce") ?? "";
 
-  if (!clientId || !redirectUri || !codeChallenge) {
-    sendError(response, 400, "Parâmetros OAuth incompletos: client_id, redirect_uri e code_challenge são obrigatórios.");
+  if (!clientId || !redirectUri) {
+    sendError(response, 400, "Parâmetros OAuth incompletos: client_id e redirect_uri são obrigatórios.");
     return;
   }
 
@@ -313,7 +313,7 @@ function handleOAuthAuthorizeGet(url: URL, response: ServerResponse): void {
     return;
   }
 
-  const html = buildConsentPage({ clientId, redirectUri, scope, state, codeChallenge, codeChallengeMethod, nonce });
+  const html = buildConsentPage({ clientId, redirectUri, scope, state, codeChallenge: codeChallenge || "", codeChallengeMethod, nonce });
   response.writeHead(200, { "Content-Type": "text/html; charset=utf-8" });
   response.end(html);
 }
@@ -328,7 +328,7 @@ async function handleOAuthAuthorizePost(
 
   const { client_id, redirect_uri, scope, state, code_challenge, code_challenge_method, name, email, nonce } = form;
 
-  if (!client_id || !redirect_uri || !code_challenge || !email) {
+  if (!client_id || !redirect_uri || !email) {
     sendError(response, 400, "Parâmetros obrigatórios ausentes.");
     return;
   }
@@ -352,7 +352,7 @@ async function handleOAuthAuthorizePost(
     clientId: client_id,
     redirectUri: redirect_uri,
     scopes,
-    codeChallenge: code_challenge,
+    codeChallenge: code_challenge || undefined,
     codeChallengeMethod: method,
     sub: email,
     email,
@@ -380,12 +380,12 @@ async function handleOAuthToken(request: IncomingMessage, response: ServerRespon
     sendJson(response, 400, { error: "unsupported_grant_type" });
     return;
   }
-  if (!code || !redirect_uri || !code_verifier || !client_id) {
+  if (!code || !redirect_uri || !client_id) {
     sendJson(response, 400, { error: "invalid_request", error_description: "Missing required parameters." });
     return;
   }
 
-  const result = exchangeAuthCode({ code, redirectUri: redirect_uri, codeVerifier: code_verifier, clientId: client_id });
+  const result = exchangeAuthCode({ code, redirectUri: redirect_uri, codeVerifier: code_verifier || undefined, clientId: client_id });
   if (!result) {
     sendJson(response, 400, { error: "invalid_grant", error_description: "Code invalid, expired, or PKCE mismatch." });
     return;

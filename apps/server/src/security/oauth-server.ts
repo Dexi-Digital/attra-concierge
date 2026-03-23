@@ -19,7 +19,8 @@ export interface AuthCodeEntry {
   clientId: string;
   redirectUri: string;
   scopes: Scope[];
-  codeChallenge: string;
+  /** PKCE code challenge — undefined when client does not use PKCE */
+  codeChallenge?: string;
   codeChallengeMethod: "S256" | "plain";
   sub: string;
   email: string;
@@ -58,7 +59,8 @@ export function generateAuthCode(params: {
   clientId: string;
   redirectUri: string;
   scopes: Scope[];
-  codeChallenge: string;
+  /** PKCE code challenge — omit when client does not use PKCE */
+  codeChallenge?: string;
   codeChallengeMethod: "S256" | "plain";
   sub: string;
   email: string;
@@ -88,7 +90,8 @@ export interface CodeExchangeResult {
 export function exchangeAuthCode(params: {
   code: string;
   redirectUri: string;
-  codeVerifier: string;
+  /** PKCE code verifier — optional when the authorization was issued without PKCE */
+  codeVerifier?: string;
   clientId: string;
 }): CodeExchangeResult | null {
   const entry = authCodeStore.get(params.code);
@@ -99,7 +102,11 @@ export function exchangeAuthCode(params: {
   if (entry.expiresAt < Date.now()) return null;
   if (entry.clientId !== params.clientId) return null;
   if (entry.redirectUri !== params.redirectUri) return null;
-  if (!verifyPkce(params.codeVerifier, entry.codeChallenge, entry.codeChallengeMethod)) return null;
+
+  // Only verify PKCE when both the authorization request and token request include the parameters
+  if (entry.codeChallenge && params.codeVerifier) {
+    if (!verifyPkce(params.codeVerifier, entry.codeChallenge, entry.codeChallengeMethod)) return null;
+  }
 
   return { sub: entry.sub, email: entry.email, name: entry.name, scopes: entry.scopes, nonce: entry.nonce, clientId: entry.clientId };
 }
