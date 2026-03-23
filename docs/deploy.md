@@ -41,6 +41,12 @@ AUTOCONF_BASE_URL=https://api.autoconf.com.br
 AUTOCONF_AUTH_TOKEN=<TOKEN_AUTH_AQUI>
 AUTOCONF_REVENDA_TOKEN=<TOKEN_REVENDA_AQUI>
 HANDOFF_WEBHOOK_URL=https://webhook.dexidigital.com.br/webhook/integracao-openai
+
+# OAuth 2.1 — obrigatório para o fluxo com ChatGPT
+JWT_SECRET=<openssl rand -base64 48>
+OAUTH_CLIENT_ID=<client_id gerado pelo ChatGPT Builder>
+OAUTH_REDIRECT_URI=https://chatgpt.com/connector/oauth/<id>
+MCP_AUTH_REQUIRED=true
 EOF
 
 chmod 600 /opt/attra-concierge/.env
@@ -113,6 +119,10 @@ docker run -d \
   -e AUTOCONF_AUTH_TOKEN=<TOKEN_AUTH_AQUI> \
   -e AUTOCONF_REVENDA_TOKEN=<TOKEN_REVENDA_AQUI> \
   -e HANDOFF_WEBHOOK_URL=https://webhook.dexidigital.com.br/webhook/integracao-openai \
+  -e JWT_SECRET=<openssl rand -base64 48> \
+  -e OAUTH_CLIENT_ID=<client_id do ChatGPT Builder> \
+  -e OAUTH_REDIRECT_URI=https://chatgpt.com/connector/oauth/<id> \
+  -e MCP_AUTH_REQUIRED=true \
   attra-concierge
 ```
 
@@ -188,11 +198,18 @@ Todos devem retornar JSON válido com status 200.
 | `NODE_ENV` | Não | `production` em produção (padrão: development) |
 | `APP_PORT` | Não | Porta do servidor (padrão: 3000) |
 | `APP_HOST` | Não | Host de bind (padrão: 0.0.0.0) |
-| `APP_BASE_URL` | Sim | URL pública com HTTPS |
+| `APP_BASE_URL` | **Sim** | URL pública com HTTPS |
 | `AUTOCONF_BASE_URL` | Não | URL da API AutoConf (padrão: https://api.autoconf.com.br) |
-| `AUTOCONF_AUTH_TOKEN` | Sim | Token de autenticação da API AutoConf |
-| `AUTOCONF_REVENDA_TOKEN` | Sim | Token da revenda na API AutoConf |
-| `HANDOFF_WEBHOOK_URL` | Não | Webhook N8N para handoff de leads (já tem padrão configurado) |
+| `AUTOCONF_AUTH_TOKEN` | **Sim** | Token de autenticação da API AutoConf |
+| `AUTOCONF_REVENDA_TOKEN` | **Sim** | Token da revenda na API AutoConf |
+| `HANDOFF_WEBHOOK_URL` | Não | Webhook N8N para handoff de leads (padrão configurado) |
+| `JWT_SECRET` | **Sim (prod)** | Segredo HS256 para assinar tokens. Gere: `openssl rand -base64 48` |
+| `OAUTH_CLIENT_ID` | Sim (prod) | `client_id` gerado pelo ChatGPT Builder ao registrar a Action |
+| `OAUTH_REDIRECT_URI` | Sim (prod) | `redirect_uri` gerado pelo ChatGPT Builder (copiar exatamente) |
+| `MCP_AUTH_REQUIRED` | Não | `true` em produção para exigir Bearer token no MCP |
+| `MCP_API_KEYS` | Não | API keys para acesso service-to-service. Formato: `token:scope1,scope2` |
+
+> O servidor recusa o start em `NODE_ENV=production` sem `JWT_SECRET`, `AUTOCONF_AUTH_TOKEN` e `AUTOCONF_REVENDA_TOKEN` configurados.
 
 ---
 

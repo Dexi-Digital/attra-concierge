@@ -11,6 +11,9 @@ servers:
   - url: https://concierge.attraveiculos.com.br
     description: Servidor de produção
 
+security:
+  - OAuth2PKCE: []
+
 paths:
   /tools/search_inventory:
     post:
@@ -57,6 +60,18 @@ paths:
         Retorna ficha completa de um veículo do estoque da Attra, incluindo
         especificações, imagens, resumo consultivo e link oficial.
       requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GetVehicleDetailsInput"
+      responses:
+        "200":
+          description: Detalhes completos do veículo.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ToolResponse_GetVehicleDetails"
         "400":
           description: Erro de validação (vehicleId ausente ou inválido).
           content:
@@ -75,22 +90,28 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/GetVehicleDetailsInput"
-      responses:
-        "200":
-          description: Detalhes completos do veículo.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ToolResponse_GetVehicleDetails"
 
   /tools/compare_vehicles:
     post:
       operationId: compareVehicles
+      x-openai-isConsequential: false
+      summary: Compara até 3 veículos com lógica consultiva
+      description: >
+        Compara 2 ou 3 veículos do estoque com análise de pontos fortes,
+        trade-offs e recomendação baseada no objetivo do cliente.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CompareVehiclesInput"
+      responses:
+        "200":
+          description: Comparação consultiva com strengths, tradeoffs e recomendação.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ToolResponse_CompareVehicles"
         "400":
           description: Erro de validação (vehicleIds ausentes, quantidade inválida, etc).
           content:
@@ -109,54 +130,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
-      x-openai-isConsequential: false
-      summary: Compara até 3 veículos com lógica consultiva
-      description: >
-        Compara 2 ou 3 veículos do estoque com análise de pontos fortes,
-        trade-offs e recomendação baseada no objetivo do cliente.
-        "400":
-          description: Erro de validação (campos obrigatórios ausentes, formato inválido).
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "500":
-          description: Erro interno do servidor ao criar handoff.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/CompareVehiclesInput"
-      responses:
-        "200":
-          description: Comparação consultiva com strengths, tradeoffs e recomendação.
-          content:
-            application/json:
-        "400":
-          description: Erro de validação (vehicleId ou purchaseMode ausentes/inválidos).
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "404":
-          description: Veículo não encontrado no estoque.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "500":
-          description: Erro interno do servidor.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-              schema:
-                $ref: "#/components/schemas/ToolResponse_CompareVehicles"
 
   /tools/start_consultant_handoff:
     post:
@@ -180,6 +153,18 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ToolResponse_StartConsultantHandoff"
+        "400":
+          description: Erro de validação (campos obrigatórios ausentes ou inválidos).
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Erro interno do servidor ao criar handoff.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 
   /tools/preview_purchase_path:
     post:
@@ -203,8 +188,42 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ToolResponse_PreviewPurchasePath"
+        "400":
+          description: Erro de validação (vehicleId ou purchaseMode ausentes/inválidos).
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Veículo não encontrado no estoque.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Erro interno do servidor.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 
 components:
+  securitySchemes:
+    OAuth2PKCE:
+      type: oauth2
+      description: >
+        OAuth 2.1 com Authorization Code + PKCE. O servidor de autorização está
+        hospedado no próprio domínio da API. O campo client_id e redirect_uri são
+        configurados no painel do ChatGPT Builder ao registrar a Action.
+      flows:
+        authorizationCode:
+          authorizationUrl: https://concierge.attraveiculos.com.br/oauth/authorize
+          tokenUrl: https://concierge.attraveiculos.com.br/oauth/token
+          scopes:
+            openid: Identificação do usuário (OIDC)
+            inventory:read: Buscar e visualizar veículos do estoque
+            handoff:write: Iniciar handoff comercial com consultor
+
   schemas:
     ErrorResponse:
       type: object
@@ -287,11 +306,11 @@ components:
           maxItems: 3
           description: IDs dos veículos para comparar (2 a 3)
         comparisonGoal:
+          type: string
+          description: Objetivo da comparação (ex. "qual é melhor para uso diário")
       example:
         vehicleIds: ["ac-123", "ac-456", "ac-789"]
         comparisonGoal: "qual é melhor para uso diário com família"
-          type: string
-          description: Objetivo da comparação (ex. "qual é melhor para uso diário")
 
     StartConsultantHandoffInput:
       type: object
@@ -425,13 +444,13 @@ components:
           type: string
           enum: [cash, trade_in, financing]
           description: Modalidade de compra pretendida
+        budgetContext:
+          type: string
+          description: Contexto de orçamento do cliente (opcional)
       example:
         vehicleId: "ac-123"
         purchaseMode: "financing"
         budgetContext: "Financiamento de 60 meses, entrada de 30%"
-        budgetContext:
-          type: string
-          description: Contexto de orçamento do cliente (opcional)
 
     VehicleRecord:
       type: object
@@ -468,6 +487,19 @@ components:
           type: string
         available:
           type: boolean
+          description: Disponibilidade interna (true = em estoque)
+        condition:
+          type: string
+          enum: [new, used]
+          description: Condição do veículo (OpenAI Product Feed Spec)
+        availability:
+          type: string
+          enum: [in_stock, out_of_stock, preorder, backorder]
+          description: Status de disponibilidade padronizado (OpenAI Product Feed Spec)
+        currency:
+          type: string
+          description: Código de moeda ISO 4217 (ex. "BRL")
+          default: "BRL"
         vehicleUrl:
           type: string
           format: uri

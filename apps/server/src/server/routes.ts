@@ -12,6 +12,8 @@ import { sendError, sendJson } from "./error-handler.js";
 import type { ToolName } from "../mcp/tool-metadata.js";
 import { generateAuthCode, exchangeAuthCode, generateAccessToken, generateIdToken, verifyAccessToken } from "../security/oauth-server.js";
 import { ALL_SCOPES, ALL_SUPPORTED_SCOPES, type Scope } from "../security/scopes.js";
+import { validateToken } from "../security/oauth.js";
+import { checkGlobalRateLimit, checkWriteRateLimit, getRateLimitHeaders } from "../security/rate-limit.js";
 
 // Pasta do build da web app (apps/web/dist), relativa ao CWD do server (apps/server)
 const WEB_DIST = path.resolve(process.cwd(), "../web/dist");
@@ -56,14 +58,45 @@ function serveStaticFile(response: ServerResponse, urlPathname: string): boolean
 
 const tools = registerTools();
 
-function setCorsHeaders(response: ServerResponse): void {
-  response.setHeader("Access-Control-Allow-Origin", "*");
+// Origins that are allowed to call the API.
+// In production these are restricted to the ChatGPT domains and the app itself.
+const ALLOWED_ORIGINS_PRODUCTION = [
+  "https://chatgpt.com",
+  "https://chat.openai.com",
+  appConfig.env.appBaseUrl,
+];
+
+function setCorsHeaders(request: IncomingMessage, response: ServerResponse): void {
+  const origin = (request.headers["origin"] as string | undefined) ?? "";
+  const isProduction = appConfig.env.nodeEnv === "production";
+
+  if (isProduction) {
+    if (ALLOWED_ORIGINS_PRODUCTION.includes(origin)) {
+      response.setHeader("Access-Control-Allow-Origin", origin);
+      response.setHeader("Vary", "Origin");
+    }
+    // No origin header on server-to-server calls — allowed without CORS headers
+  } else {
+    response.setHeader("Access-Control-Allow-Origin", "*");
+  }
+
   response.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
   response.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
 }
 
+function setSecurityHeaders(response: ServerResponse): void {
+  response.setHeader("X-Content-Type-Options", "nosniff");
+  response.setHeader("X-Frame-Options", "DENY");
+  response.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
+  response.setHeader("X-XSS-Protection", "0"); // disabled — browsers should use CSP instead
+  if (appConfig.env.nodeEnv === "production") {
+    response.setHeader("Strict-Transport-Security", "max-age=63072000; includeSubDomains");
+  }
+}
+
 export async function routeRequest(request: IncomingMessage, response: ServerResponse): Promise<void> {
-  setCorsHeaders(response);
+  setCorsHeaders(request, response);
+  setSecurityHeaders(response);
 
   const method = request.method ?? "GET";
   const url = new URL(request.url ?? "/", appConfig.env.appBaseUrl);
@@ -161,7 +194,20 @@ export async function routeRequest(request: IncomingMessage, response: ServerRes
   }
 
   if (method === "GET" && url.pathname === "/analytics") {
+    // Protected: requires a valid Bearer token
+    const analyticsAuth = validateToken(request.headers["authorization"] as string | undefined);
+    if (!analyticsAuth.ok) {
+      response.setHeader("WWW-Authenticate", "Bearer");
+      sendJson(response, analyticsAuth.statusCode, { error: analyticsAuth.error });
+      return;
+    }
     sendJson(response, 200, getAnalyticsSummary());
+    return;
+  }
+
+  if (method === "GET" && url.pathname === "/privacidade") {
+    response.writeHead(200, { "Content-Type": "text/html; charset=utf-8" });
+    response.end(buildPrivacyPolicyPage());
     return;
   }
 
@@ -171,6 +217,31 @@ export async function routeRequest(request: IncomingMessage, response: ServerRes
 
     if (!tool) {
       sendError(response, 404, `Tool ${toolName} não encontrada.`);
+      return;
+    }
+
+    // Auth enforcement — mirrors the MCP endpoint
+    const authResult = validateToken(request.headers["authorization"] as string | undefined);
+    if (!authResult.ok) {
+      response.setHeader("WWW-Authenticate", "Bearer");
+      sendJson(response, authResult.statusCode, { error: authResult.error });
+      return;
+    }
+
+    // Rate limiting — write tools get stricter limits
+    const isWriteTool = toolName === "start_consultant_handoff";
+    const rateLimitKey = authResult.claims.sub ?? (request.headers["x-forwarded-for"] as string | undefined) ?? "anonymous";
+    const rateLimitResult = isWriteTool
+      ? checkWriteRateLimit(rateLimitKey)
+      : checkGlobalRateLimit(rateLimitKey);
+
+    const rateLimitHeaders = getRateLimitHeaders(rateLimitResult);
+    for (const [key, value] of Object.entries(rateLimitHeaders)) {
+      response.setHeader(key, value);
+    }
+
+    if (!rateLimitResult.allowed) {
+      sendJson(response, 429, { error: "Rate limit excedido. Tente novamente em breve." });
       return;
     }
 
@@ -505,4 +576,76 @@ function buildConsentPage(params: {
 
 function esc(str: string): string {
   return str.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+/* ─── Privacy Policy (LGPD) ─────────────────────────────────────── */
+
+function buildPrivacyPolicyPage(): string {
+  return `<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Política de Privacidade — Attra Concierge</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:system-ui,sans-serif;background:#f9f9f9;color:#1a1a1a;line-height:1.7;padding:2rem 1rem}
+    .container{max-width:740px;margin:0 auto;background:#fff;border-radius:12px;padding:2.5rem;box-shadow:0 2px 16px rgba(0,0,0,.07)}
+    h1{font-size:1.6rem;margin-bottom:.3rem}
+    .updated{font-size:.82rem;color:#777;margin-bottom:2rem}
+    h2{font-size:1.05rem;font-weight:700;margin:1.8rem 0 .5rem}
+    p{margin-bottom:.8rem;font-size:.95rem;color:#333}
+    ul{padding-left:1.4rem;margin-bottom:.8rem}
+    li{font-size:.95rem;color:#333;margin-bottom:.3rem}
+    a{color:#1a1a1a}
+    .footer{margin-top:2rem;font-size:.82rem;color:#999;border-top:1px solid #eee;padding-top:1rem}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Política de Privacidade</h1>
+    <p class="updated">Attra Concierge &mdash; Última atualização: março de 2026</p>
+
+    <h2>1. Quem somos</h2>
+    <p>O Attra Concierge é um assistente de inteligência artificial operado pela <strong>Attra Veículos</strong>, com sede em Uberlândia/MG, Brasil. Ele auxilia usuários na busca e avaliação de veículos premium disponíveis no estoque da Attra.</p>
+
+    <h2>2. Dados que coletamos</h2>
+    <ul>
+      <li><strong>Dados de identificação voluntários:</strong> nome e e-mail fornecidos durante o fluxo de autorização OAuth, utilizados apenas para personalizar o atendimento.</li>
+      <li><strong>Dados de interação:</strong> consultas realizadas ao assistente (termos de busca, filtros aplicados, veículos visualizados), armazenadas de forma anonimizada para fins de análise de uso.</li>
+      <li><strong>Dados de handoff:</strong> quando o usuário solicita contato com um consultor, as informações fornecidas (nome, canal de contato, interesse em veículo) são transmitidas à equipe comercial da Attra.</li>
+    </ul>
+
+    <h2>3. Como usamos os dados</h2>
+    <ul>
+      <li>Responder consultas sobre o estoque de veículos em tempo real.</li>
+      <li>Encaminhar solicitações de contato à equipe comercial da Attra.</li>
+      <li>Melhorar a qualidade do assistente com base em padrões de uso anonimizados.</li>
+    </ul>
+    <p>Não utilizamos os dados para publicidade de terceiros, perfilamento comportamental ou venda a terceiros.</p>
+
+    <h2>4. Base legal (LGPD — Lei 13.709/2018)</h2>
+    <p>O tratamento dos dados se baseia em: (i) consentimento do titular, obtido no momento da autorização OAuth; e (ii) legítimo interesse da Attra Veículos na prestação do serviço de concierge.</p>
+
+    <h2>5. Compartilhamento de dados</h2>
+    <p>Os dados são compartilhados exclusivamente com:</p>
+    <ul>
+      <li><strong>OpenAI:</strong> operador da plataforma ChatGPT, sujeito à sua própria política de privacidade.</li>
+      <li><strong>Equipe comercial da Attra:</strong> exclusivamente quando o usuário solicita um handoff para contato.</li>
+    </ul>
+
+    <h2>6. Retenção</h2>
+    <p>Dados de sessão são retidos em memória apenas durante a sessão ativa. Dados de handoff ficam armazenados no sistema CRM da Attra pelo prazo necessário ao atendimento comercial, respeitados os limites legais.</p>
+
+    <h2>7. Seus direitos</h2>
+    <p>Nos termos da LGPD, você pode a qualquer momento: confirmar a existência de tratamento, acessar seus dados, solicitar correção, portabilidade ou exclusão. Envie sua solicitação para <a href="mailto:privacidade@attraveiculos.com.br">privacidade@attraveiculos.com.br</a>.</p>
+
+    <h2>8. Contato</h2>
+    <p>Attra Veículos &mdash; Uberlândia, MG, Brasil<br>
+    E-mail: <a href="mailto:privacidade@attraveiculos.com.br">privacidade@attraveiculos.com.br</a></p>
+
+    <div class="footer">Esta política é aplicável ao assistente Attra Concierge disponível no ChatGPT. Para a política geral do site Attra Veículos, acesse attraveiculos.com.br.</div>
+  </div>
+</body>
+</html>`;
 }

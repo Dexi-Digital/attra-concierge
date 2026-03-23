@@ -21,6 +21,8 @@ export function mapAutoConfToVehicle(v: AutoConfVeiculo): VehicleRecord {
   const title = buildTitle(v);
   const vehicleUrl = buildVehicleUrl(v);
 
+  const mileageKm = v.km ?? 0;
+
   return {
     id: `ac-${v.id}`,
     externalStockId: String(v.id),
@@ -30,7 +32,7 @@ export function mapAutoConfToVehicle(v: AutoConfVeiculo): VehicleRecord {
     title,
     yearModel,
     price,
-    mileageKm: v.km ?? 0,
+    mileageKm,
     fuelType: v.combustivel_nome,
     transmission: v.cambio_nome,
     bodyType: mapBodyType(v.carroceria_nome),
@@ -38,6 +40,10 @@ export function mapAutoConfToVehicle(v: AutoConfVeiculo): VehicleRecord {
     color: v.cor_nome || undefined,
     storeUnit: v.revenda_nome,
     available: true,
+    // OpenAI Product Feed Spec fields
+    condition: mileageKm === 0 ? "new" : "used",
+    availability: "in_stock",
+    currency: "BRL",
     vehicleUrl,
     mainImageUrl,
     imageUrls,

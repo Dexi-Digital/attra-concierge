@@ -17,6 +17,12 @@ export const vehicleRecordSchema = z.object({
   color: z.string().min(1).optional(),
   storeUnit: z.string().min(1),
   available: z.boolean(),
+  /** OpenAI Product Feed Spec — condição do veículo */
+  condition: z.enum(["new", "used"]).optional(),
+  /** OpenAI Product Feed Spec — status de disponibilidade padronizado */
+  availability: z.enum(["in_stock", "out_of_stock", "preorder", "backorder"]).optional(),
+  /** OpenAI Product Feed Spec — código de moeda ISO 4217 */
+  currency: z.string().length(3).optional(),
   vehicleUrl: z.string().url(),
   mainImageUrl: z.string().url().optional(),
   imageUrls: z.array(z.string().url()),
