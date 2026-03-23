@@ -28,15 +28,18 @@ const WRITE_TOOL_CONFIG: RateLimitConfig = {
 
 const buckets = new Map<string, RateLimitBucket>();
 
-/** Periodically clean stale buckets to prevent memory leaks */
-setInterval(() => {
+/** Remove stale buckets to prevent memory leaks. Called lazily on every N-th request. */
+let requestCount = 0;
+const CLEANUP_EVERY = 500;
+
+function cleanStaleBuckets(): void {
   const now = Date.now();
   for (const [key, bucket] of buckets.entries()) {
     if (now - bucket.windowStartMs > DEFAULT_GLOBAL_CONFIG.windowMs * 2) {
       buckets.delete(key);
     }
   }
-}, 120_000).unref();
+}
 
 export interface RateLimitResult {
   allowed: boolean;
@@ -45,6 +48,8 @@ export interface RateLimitResult {
 }
 
 function checkLimit(key: string, config: RateLimitConfig): RateLimitResult {
+  if (++requestCount % CLEANUP_EVERY === 0) cleanStaleBuckets();
+
   const now = Date.now();
   const bucket = buckets.get(key);
 
