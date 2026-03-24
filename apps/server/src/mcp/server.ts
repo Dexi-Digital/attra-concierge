@@ -50,11 +50,22 @@ function jsonRpcResult(id: string | number | null, result: unknown): JsonRpcResp
 
 /* ─── Request body reader ────────────────────────────────────────── */
 
+/** Maximum accepted request body size (64 KB). Prevents DoS via oversized payloads. */
+const MAX_BODY_BYTES = 64 * 1024;
+
 async function readBody(req: IncomingMessage): Promise<unknown> {
   const chunks: Uint8Array[] = [];
+  let totalBytes = 0;
+
   for await (const chunk of req) {
-    chunks.push(typeof chunk === "string" ? Buffer.from(chunk) : chunk);
+    const buf = typeof chunk === "string" ? Buffer.from(chunk) : chunk;
+    totalBytes += buf.length;
+    if (totalBytes > MAX_BODY_BYTES) {
+      throw new Error(`Request body exceeds maximum size of ${MAX_BODY_BYTES} bytes`);
+    }
+    chunks.push(buf);
   }
+
   if (chunks.length === 0) return {};
   return JSON.parse(Buffer.concat(chunks).toString("utf-8"));
 }

@@ -40,12 +40,14 @@ test("validateToken rejeita JWT inválido", () => {
   assert.equal(result.ok, false);
 });
 
-test("validateToken aceita api key sem registry configurado (all-scopes vazio)", () => {
-  // Sem MCP_API_KEYS: qualquer token não-JWT deve ser aceito com sub=api_key
+test("validateToken rejeita token opaco quando não há registry configurado", () => {
+  // Sem MCP_API_KEYS: tokens não-JWT devem ser rejeitados.
+  // Aceitar com scopes:[] causaria falha silenciosa no scope-check de todas as tools.
+  // Acesso anônimo só é liberado quando NENHUM token é enviado (modo dev, sem auth obrigatória).
   const result = validateToken("Bearer simple-api-key-not-jwt");
-  assert.equal(result.ok, true);
-  if (result.ok) {
-    assert.equal(result.claims.sub, "api_key");
+  assert.equal(result.ok, false);
+  if (!result.ok) {
+    assert.equal(result.statusCode, 401);
   }
 });
 

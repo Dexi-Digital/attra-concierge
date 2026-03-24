@@ -84,11 +84,32 @@ function setCorsHeaders(request: IncomingMessage, response: ServerResponse): voi
   response.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
 }
 
+/**
+ * Content-Security-Policy values per response type.
+ *
+ * API (JSON) responses: fully restrictive — no browser context expected.
+ * HTML pages served by this server (consent, privacy): allow inline styles, form POST to self.
+ * SPA (web app in iframe): allow scripts/styles from same origin + frame-ancestors for ChatGPT.
+ */
+const CSP_API = "default-src 'none'; frame-ancestors 'none'";
+const CSP_HTML = "default-src 'none'; style-src 'unsafe-inline'; form-action 'self'; frame-ancestors 'none'";
+const CSP_SPA = [
+  "default-src 'self'",
+  "script-src 'self'",
+  "style-src 'self' 'unsafe-inline'",
+  "img-src 'self' data: https:",
+  "font-src 'self'",
+  "connect-src 'self'",
+  "frame-ancestors https://chatgpt.com https://chat.openai.com"
+].join("; ");
+
 function setSecurityHeaders(response: ServerResponse): void {
   response.setHeader("X-Content-Type-Options", "nosniff");
   response.setHeader("X-Frame-Options", "DENY");
   response.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
   response.setHeader("X-XSS-Protection", "0"); // disabled — browsers should use CSP instead
+  // Default CSP for API (JSON) responses. HTML routes override this below.
+  response.setHeader("Content-Security-Policy", CSP_API);
   if (appConfig.env.nodeEnv === "production") {
     response.setHeader("Strict-Transport-Security", "max-age=63072000; includeSubDomains");
   }
@@ -206,6 +227,7 @@ export async function routeRequest(request: IncomingMessage, response: ServerRes
   }
 
   if (method === "GET" && url.pathname === "/privacidade") {
+    response.setHeader("Content-Security-Policy", CSP_HTML);
     response.writeHead(200, { "Content-Type": "text/html; charset=utf-8" });
     response.end(buildPrivacyPolicyPage());
     return;
@@ -291,7 +313,12 @@ export async function routeRequest(request: IncomingMessage, response: ServerRes
   }
 
   // Fallback: serve web app (SPA) para rotas GET não reconhecidas
-  if (method === "GET" && serveStaticFile(response, url.pathname)) return;
+  // Override CSP to allow framing inside ChatGPT and SPA assets from same origin
+  if (method === "GET") {
+    response.setHeader("Content-Security-Policy", CSP_SPA);
+    response.setHeader("X-Frame-Options", "ALLOWALL"); // removed — CSP frame-ancestors takes precedence
+    if (serveStaticFile(response, url.pathname)) return;
+  }
 
   sendError(response, 404, "Rota não encontrada.");
 }
@@ -385,6 +412,7 @@ function handleOAuthAuthorizeGet(url: URL, response: ServerResponse): void {
   }
 
   const html = buildConsentPage({ clientId, redirectUri, scope, state, codeChallenge: codeChallenge || "", codeChallengeMethod, nonce });
+  response.setHeader("Content-Security-Policy", CSP_HTML);
   response.writeHead(200, { "Content-Type": "text/html; charset=utf-8" });
   response.end(html);
 }
@@ -417,7 +445,9 @@ async function handleOAuthAuthorizePost(
   }
 
   const method = code_challenge_method === "plain" ? "plain" : "S256";
-  const scopes = (scope ?? "").split(" ").filter((s) => ALL_SCOPES.includes(s as Scope)) as Scope[];
+  // Accept both Attra business scopes AND standard OIDC scopes (openid / email / profile).
+  // Filtering only ALL_SCOPES previously dropped OIDC scopes silently, preventing id_token generation.
+  const scopes = (scope ?? "").split(" ").filter((s) => ALL_SUPPORTED_SCOPES.includes(s)) as Scope[];
 
   const code = generateAuthCode({
     clientId: client_id,

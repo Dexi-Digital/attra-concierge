@@ -102,8 +102,11 @@ export function validateToken(authHeader: string | undefined): AuthResult {
   // 2. API key registry fallback
   const reg = getRegistry();
   if (reg.size === 0) {
-    // No registry configured — accept with all scopes (simple dev/service mode)
-    return { ok: true, claims: { sub: "api_key", scopes: [] } };
+    // No registry configured and token is not a JWT — reject.
+    // Anonymous access is only available when NO token is presented in dev mode (handled above).
+    // Accepting an unknown opaque token here would grant access with empty scopes, silently
+    // blocking every tool call at the scope-enforcement step.
+    return { ok: false, error: "Invalid or expired token.", statusCode: 401 };
   }
   const scopes = reg.get(token);
   if (!scopes) {

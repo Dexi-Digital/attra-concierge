@@ -3,6 +3,7 @@ import { readEnv } from "../../config/env.js";
 import { createAutoConfClient, type AutoConfClient } from "../../integrations/stock/autoconf-client.js";
 import { mapAutoConfToVehicle } from "../../integrations/stock/autoconf-mapper.js";
 import { seedVehicles } from "../../integrations/stock/stock-fixtures.js";
+import { logger } from "../../telemetry/logger.js";
 
 export interface VehicleRepository {
   list(): Promise<VehicleRecord[]>;
@@ -58,10 +59,10 @@ export class AutoConfVehicleRepository implements VehicleRepository {
       const raw = await this.client.fetchAllVeiculos();
       this.cache = raw.map(mapAutoConfToVehicle);
       this.cacheTimestamp = now;
-      console.log(`[AutoConf] Loaded ${this.cache.length} vehicles from API`);
+      logger.info(`[AutoConf] Loaded ${this.cache.length} vehicles from API`);
       return this.cache;
     } catch (err) {
-      console.error("[AutoConf] Failed to fetch vehicles:", err);
+      logger.error("[AutoConf] Failed to fetch vehicles", { error: err instanceof Error ? err.message : String(err) });
       // Fall back to cache if available, otherwise empty
       if (this.cache) return this.cache;
       return [];
@@ -72,11 +73,11 @@ export class AutoConfVehicleRepository implements VehicleRepository {
 function createVehicleRepository(): VehicleRepository {
   const env = readEnv();
   if (env.autoconfAuthToken && env.autoconfRevendaToken) {
-    console.log("[AutoConf] Using real AutoConf API for vehicle data");
+    logger.info("[AutoConf] Using real AutoConf API for vehicle data");
     const client = createAutoConfClient(env);
     return new AutoConfVehicleRepository(client);
   }
-  console.log("[AutoConf] No credentials found, using seed fixtures");
+  logger.info("[AutoConf] No credentials found, using seed fixtures");
   return new InMemoryVehicleRepository(seedVehicles);
 }
 
